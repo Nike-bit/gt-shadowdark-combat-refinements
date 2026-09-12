@@ -62,6 +62,7 @@ import { migrateLegacyModuleId, registerMigration } from "./migration.mjs";
 import { registerMkTargetingSetting } from "./mk-targeting-bridge.mjs";
 import { registerDeathTimerBridgeHooks } from "./mk-death-timer-bridge.mjs";
 import { registerSaveRequestHooks, registerSaveResolutionSetting } from "./save-requests.mjs";
+import { registerSheetFavoriteSpellHooks, registerSheetFavoritesSetting } from "./sheet-favorite-spells.mjs";
 
 const SHADOWDARK_SYSTEM_ID = "shadowdark";
 const NPC_ACTOR_TYPE = "NPC";
@@ -287,6 +288,7 @@ function registerSettings() {
   }
   registerMkTargetingSetting();
   registerSaveResolutionSetting();
+  registerSheetFavoritesSetting();
   registerMigration();
   registerPresetLibrary();
   registerSpellMishapSettings();
@@ -713,6 +715,7 @@ Hooks.once("init", () => {
   Hooks.on("renderTokenHUD", injectQuickAttributeLauncher);
   Hooks.on("renderActorSheet", injectPlayerSpellFavorites);
   Hooks.on("renderActorSheetV2", injectPlayerSpellFavorites);
+  registerSheetFavoriteSpellHooks();
   Hooks.on("preCreateChatMessage", bridgeAttackChatMetadata);
   Hooks.on("renderChatMessageHTML", injectChatRerollModes);
   Hooks.on("renderChatMessageHTML", injectAttackChatPresentation);

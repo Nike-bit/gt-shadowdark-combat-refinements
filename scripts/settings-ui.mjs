@@ -13,6 +13,7 @@ const QUICK_ATTACK_SETTING = "enableQuickAttackButton";
 const QUICK_SPELL_SETTING = "enableQuickSpellButton";
 const QUICK_ABILITY_SETTING = "enableQuickAbilityButton";
 const QUICK_ATTRIBUTE_SETTING = "enableQuickAttributeButton";
+const SHEET_FAVORITES_SETTING = "showFavoriteSpellsOnSheet";
 const TINT_ATTACK_MESSAGES_SETTING = "tintMultiattackMessages";
 const TINT_SPELL_MESSAGES_SETTING = "tintSpellMessages";
 const ENABLE_MISHAPS_SETTING = "enableAutomaticSpellMishaps";
@@ -259,7 +260,17 @@ function enhanceQuickSpellSettings(root) {
     ?? settingInput(root, QUICK_ABILITY_SETTING)?.closest(".form-group")
     ?? toggleGroup;
   lastToggleGroup.insertAdjacentElement("afterend", delayGroup);
-  const updateVisibility = () => { delayGroup.hidden = !toggles.some(input => input.checked); };
+  // Favourite spells exist only with the Quick Spell button, so its sheet
+  // toggle sits right under it and hides with it.
+  const favoritesGroup = settingInput(root, SHEET_FAVORITES_SETTING)?.closest(".form-group") ?? null;
+  if (favoritesGroup) {
+    favoritesGroup.classList.add("gt-npc-ma-sheet-favorites-setting");
+    toggleGroup.insertAdjacentElement("afterend", favoritesGroup);
+  }
+  const updateVisibility = () => {
+    delayGroup.hidden = !toggles.some(input => input.checked);
+    if (favoritesGroup) favoritesGroup.hidden = !toggle.checked;
+  };
   for (const input of toggles) input.addEventListener("change", updateVisibility);
   updateVisibility();
 }

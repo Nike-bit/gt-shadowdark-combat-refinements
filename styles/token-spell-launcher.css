@@ -276,3 +276,28 @@
   max-width: 100%;
   height: auto;
 }
+
+/* Favorite Spells box on the Player sheet's Abilities tab. */
+.shadowdark.sheet.player .gt-npc-ma-favorite-spells .gt-npc-ma-favorite-spell {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 6px;
+}
+
+.shadowdark.sheet.player .gt-npc-ma-favorite-spells .gt-npc-ma-favorite-spell .item-subtext {
+  grid-column: 1;
+}
+
+.shadowdark.sheet.player .gt-npc-ma-favorite-spells .gt-npc-ma-favorite-spell-actions {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.shadowdark.sheet.player .gt-npc-ma-favorite-spells .is-unavailable .gt-npc-ma-favorite-spell-cast {
+  opacity: 0.55;
+  text-decoration: line-through;
+}

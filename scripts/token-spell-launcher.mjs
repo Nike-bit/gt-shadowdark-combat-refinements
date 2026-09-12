@@ -60,6 +60,7 @@ function spellEntry({ actorType, spell, itemUuid, source, available = true, favo
     tier,
     source,
     description: String(spell.system?.description ?? ""),
+    subtext: String(spell.system?.subtext ?? ""),
     available: available && spell.system?.lost !== true,
     requiresFocus: spell.system?.duration?.type === "focus",
     favorite: actorType === PLAYER_ACTOR_TYPE && favorites.has(id)
