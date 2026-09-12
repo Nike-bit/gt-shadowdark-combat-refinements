@@ -1,0 +1,141 @@
+.gt-npc-ma-target-selector {
+  display: grid;
+  gap: 7px;
+  margin: 8px 0;
+  padding: 8px 0;
+  border-top: 1px solid var(--color-border-light-2, #999);
+  border-bottom: 1px solid var(--color-border-light-2, #999);
+}
+
+.gt-npc-ma-target-selector[inert] {
+  opacity: 0.7;
+}
+
+.gt-npc-ma-target-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.gt-npc-ma-target-header input {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.gt-npc-ma-target-heading-group,
+.gt-npc-ma-sees-hidden {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.gt-npc-ma-sees-hidden {
+  font-size: var(--font-size-13, 0.8125rem);
+  font-weight: 600;
+}
+
+.gt-npc-ma-target-rows {
+  display: grid;
+  gap: 5px;
+}
+
+.gt-npc-ma-target-rows[hidden] {
+  display: none;
+}
+
+.gt-npc-ma-target-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 48px 28px 30px 28px 28px;
+  align-items: center;
+  gap: 4px;
+}
+
+.gt-npc-ma-target-row.has-remove {
+  grid-template-columns: minmax(0, 1fr) 48px 28px 30px 28px 28px;
+}
+
+.gt-npc-ma-target-row select {
+  min-width: 0;
+}
+
+.gt-npc-ma-target-row select.is-placeholder {
+  color: var(--color-text-dark-secondary, #777);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.gt-npc-ma-target-row select option:not([value=""]) {
+  font-style: normal;
+}
+
+.gt-npc-ma-target-roll-mode {
+  width: 48px;
+  min-width: 48px;
+  padding-inline: 4px;
+  text-align: center;
+}
+
+.gt-npc-ma-target-row button,
+.gt-npc-ma-target-add-row {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0;
+  line-height: 1;
+}
+
+.gt-npc-ma-target-count {
+  display: block;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.gt-npc-ma-target-expanded {
+  display: grid;
+  gap: 7px;
+}
+
+.gt-npc-ma-target-expanded[hidden] {
+  display: none;
+}
+
+.gt-npc-ma-target-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+
+.gt-npc-ma-target-filters label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.gt-npc-ma-target-filters input {
+  margin: 0;
+}
+
+.gt-npc-ma-target-add-row {
+  justify-self: end;
+  margin-right: 32px;
+}
+
+.gt-npc-ma-target-add-row[hidden] {
+  display: none;
+}
+
+.gt-npc-ma-target-add-row:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* With this module's Target row on the dialog, MK-Shadowdark's Targeting
+   Assistant panel is redundant; the class is set per dialog by the bridge and
+   outlives MK's own re-renders. */
+.gt-npc-ma-yields-mk .mk-targeting-assistant { display: none !important; }

@@ -1,0 +1,143 @@
+.gt-npc-ma-font-settings[hidden] {
+  display: none;
+}
+
+.gt-npc-ma-preset-library-setting[hidden] {
+  display: none;
+}
+
+.gt-npc-ma-preset-library-setting {
+  padding-left: 18px;
+  border-left: 2px solid var(--color-border-light-2, #777);
+}
+
+.gt-npc-ma-mishap-menu-setting {
+  padding-left: 18px;
+  border-left: 2px solid var(--color-border-light-2, #777);
+}
+
+.gt-npc-ma-tooltip-hover-setting[hidden] {
+  display: none;
+}
+
+.gt-npc-ma-tooltip-hover-setting {
+  padding-left: 18px;
+  border-left: 2px solid var(--color-border-light-2, #777);
+}
+
+.gt-npc-ma-attack-message-colors[hidden] {
+  display: none;
+}
+
+.gt-npc-ma-spell-message-colors[hidden] {
+  display: none;
+}
+
+.gt-npc-ma-attack-message-colors,
+.gt-npc-ma-spell-message-colors {
+  padding-left: 18px;
+  border-left: 2px solid var(--color-border-light-2, #777);
+}
+
+
+.gt-npc-ma-mishap-grid {
+  display: grid;
+  grid-template-columns: minmax(145px, 0.8fr) repeat(3, minmax(155px, 1fr)) 34px;
+  gap: 7px;
+  align-items: start;
+}
+
+.gt-npc-ma-mishap-header {
+  margin-bottom: 5px;
+  padding: 0 2px;
+}
+
+.gt-npc-ma-mishap-row {
+  margin-bottom: 7px;
+}
+
+.gt-npc-ma-mishap-class {
+  display: grid;
+  gap: 5px;
+}
+
+.gt-npc-ma-mishap-row input,
+.gt-npc-ma-mishap-row select {
+  width: 100%;
+  min-width: 0;
+}
+
+
+.gt-npc-ma-mishap-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.gt-npc-ma-attack-message-color .gt-npc-ma-color-control,
+.gt-npc-ma-spell-message-color .gt-npc-ma-color-control {
+  width: 100%;
+}
+
+.gt-npc-ma-keybindings-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.gt-npc-ma-font-row {
+  align-items: start;
+}
+
+.gt-npc-ma-font-fields {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) minmax(180px, 1.35fr);
+  gap: 8px;
+}
+
+.gt-npc-ma-font-style {
+  min-width: 0;
+}
+
+.gt-npc-ma-font-hint {
+  font-style: italic;
+}
+
+.gt-npc-ma-color-control {
+  display: grid;
+  grid-template-columns: minmax(92px, 1fr) minmax(64px, 0.7fr);
+  gap: 5px;
+  min-width: 0;
+}
+
+.gt-npc-ma-color-text {
+  min-width: 0;
+  font-family: monospace;
+}
+
+.gt-npc-ma-native-color {
+  width: 100%;
+  min-width: 64px;
+  height: var(--input-height, 32px);
+  padding: 2px;
+  cursor: pointer;
+}
+
+@media (max-width: 520px) {
+  .gt-npc-ma-font-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 850px) {
+  .gt-npc-ma-mishap-header {
+    display: none;
+  }
+
+  .gt-npc-ma-mishap-grid {
+    grid-template-columns: 1fr;
+  }
+}

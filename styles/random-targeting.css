@@ -1,0 +1,98 @@
+.gt-npc-ma-target-modes {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--font-size-13, 0.8125rem);
+  font-weight: 600;
+}
+
+.gt-npc-ma-target-modes label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gt-npc-ma-target-modes input {
+  margin: 0;
+}
+
+.gt-npc-ma-random-panel {
+  display: grid;
+  min-height: 150px;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--color-border-light-2, #999);
+  border-radius: 3px;
+  background: rgb(0 0 0 / 10%);
+}
+
+.gt-npc-ma-random-panel[hidden] {
+  display: none;
+}
+
+.gt-npc-ma-random-add {
+  width: 100%;
+  color: var(--color-text-dark-secondary, #777);
+  font-style: italic;
+}
+
+.gt-npc-ma-random-pool {
+  display: flex;
+  align-content: start;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 94px;
+  cursor: pointer;
+}
+
+.gt-npc-ma-random-target {
+  display: inline-grid;
+  grid-template-columns: 22px minmax(0, auto);
+  align-items: center;
+  max-width: 100%;
+  height: 30px;
+  gap: 5px;
+  padding: 3px 7px 3px 4px;
+  border: 1px solid var(--color-border-light-2, #999);
+  border-radius: 4px;
+  background: rgb(0 0 0 / 18%);
+  cursor: context-menu;
+}
+
+.gt-npc-ma-random-target img {
+  width: 22px;
+  height: 22px;
+  border: 0;
+  object-fit: cover;
+}
+
+.gt-npc-ma-random-target span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gt-npc-ma-random-empty {
+  align-self: center;
+  margin: auto;
+  opacity: 0.65;
+  font-style: italic;
+  pointer-events: none;
+}
+
+.gt-npc-ma-random-summary ol {
+  display: grid;
+  gap: 3px;
+  margin: 5px 0 0;
+  padding-left: 20px;
+}
+
+.gt-npc-ma-random-summary li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 28px;
+  gap: 8px;
+}
+
+.gt-npc-ma-random-summary li strong {
+  text-align: center;
+}

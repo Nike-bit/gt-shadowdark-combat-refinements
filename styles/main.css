@@ -1,0 +1,36 @@
+.gt-npc-ma-counter {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 28px 40px 28px;
+  align-items: center;
+  gap: 5px;
+  margin: 6px 0;
+}
+
+.gt-npc-ma-counter-label {
+  min-width: 0;
+  font-weight: 700;
+}
+
+.gt-npc-ma-counter button {
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  padding: 0;
+  line-height: 1;
+}
+
+.gt-npc-ma-counter-input {
+  display: none;
+}
+
+.gt-npc-ma-counter-output {
+  display: block;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.gt-npc-ma-counter.is-rolling {
+  opacity: 0.7;
+}

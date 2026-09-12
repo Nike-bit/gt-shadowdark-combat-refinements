@@ -1,0 +1,10 @@
+<section class="gt-npc-ma-spell-mishap-result">
+  <h3><i class="fa-solid fa-wand-sparkles" aria-hidden="true"></i> {{title}}</h3>
+  <p class="gt-npc-ma-spell-mishap-context">{{context}}</p>
+  <p class="gt-npc-ma-spell-mishap-table"><strong>{{tableName}}</strong>{{#if rollTotal}} — {{rollTotal}}{{/if}}</p>
+  <div class="gt-npc-ma-spell-mishap-results">
+    {{#each results as |result|}}
+      <div class="gt-npc-ma-spell-mishap-entry">{{{result}}}</div>
+    {{/each}}
+  </div>
+</section>

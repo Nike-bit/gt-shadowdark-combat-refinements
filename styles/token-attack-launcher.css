@@ -1,0 +1,115 @@
+.gt-npc-ma-quick-attack-palette[hidden] { display: none; }
+
+.gt-npc-ma-quick-attack-palette {
+  top: 0;
+  width: 300px;
+  max-height: min(520px, 75vh);
+  padding: 7px;
+  overflow: visible;
+}
+
+.gt-npc-ma-quick-attack-group + .gt-npc-ma-quick-attack-group { margin-top: 7px; }
+
+.gt-npc-ma-quick-attack-group h4 {
+  margin: 0 0 3px;
+  padding: 3px 5px;
+  background: var(--color-cool-5-90, rgb(24 24 32 / 92%));
+  font-size: var(--font-size-12, 0.75rem);
+  text-align: left;
+}
+
+.gt-npc-ma-quick-attack-entry {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  min-height: 31px;
+}
+
+.gt-npc-ma-quick-attack-entry > img {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  object-fit: cover;
+}
+
+.gt-npc-ma-quick-attack-identity {
+  display: grid;
+  min-width: 0;
+  text-align: left;
+}
+
+.gt-npc-ma-quick-attack-name {
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gt-npc-ma-quick-attack-statistics {
+  opacity: 0.78;
+  font-size: var(--font-size-14, 0.875rem);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.gt-npc-ma-quick-attack-range {
+  overflow: hidden;
+  opacity: 0.72;
+  font-size: var(--font-size-10, 0.625rem);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gt-npc-ma-quick-attack-preview {
+  position: absolute;
+  z-index: 10;
+  top: auto;
+  right: auto;
+  bottom: calc(100% + 8px);
+  left: 0;
+  width: min(340px, 65vw);
+  max-height: min(400px, 65vh);
+  padding: 9px 11px;
+  overflow: auto;
+  border: 1px solid var(--color-border-light-primary, #8b7b6a);
+  border-radius: 4px;
+  background: var(--color-cool-5-95, rgb(20 19 25 / 97%));
+  box-shadow: 0 4px 14px rgb(0 0 0 / 48%);
+  color: var(--color-text-light-highlight, #f0f0e8);
+  pointer-events: none;
+}
+
+.gt-npc-ma-quick-attack-preview > strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--color-warm-1, #f6c453);
+  font-size: var(--font-size-14, 0.875rem);
+}
+
+/* Item description: light grey italic, between the name and the qualities. */
+.gt-npc-ma-quick-attack-preview-description {
+  margin-bottom: 7px;
+  color: var(--color-text-dark-secondary, #b5b3a4);
+  font-size: var(--font-size-12, 0.75rem);
+  font-style: italic;
+  line-height: 1.35;
+}
+
+.gt-npc-ma-quick-attack-preview-description > :first-child { margin-top: 0; }
+.gt-npc-ma-quick-attack-preview-description > :last-child { margin-bottom: 0; }
+.gt-npc-ma-quick-attack-preview-description em,
+.gt-npc-ma-quick-attack-preview-description i { font-style: normal; }
+
+.gt-npc-ma-quick-attack-preview > p,
+.gt-npc-ma-quick-attack-preview > h4 { margin: 5px 0; }
+.gt-npc-ma-quick-attack-preview > section + section { margin-top: 7px; }
+
+.gt-npc-ma-quick-attack-preview section > div {
+  margin-top: 2px;
+  font-size: var(--font-size-12, 0.75rem);
+  line-height: 1.35;
+}
+
+.gt-npc-ma-quick-attack-preview section > div > :first-child { margin-top: 0; }
+.gt-npc-ma-quick-attack-preview section > div > :last-child { margin-bottom: 0; }

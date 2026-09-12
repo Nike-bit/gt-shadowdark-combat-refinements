@@ -1,0 +1,56 @@
+<div class="gt-npc-ma-mishap-layout">
+  <div class="gt-npc-ma-mishap-introduction">
+    <p>{{localize "GTNPCMULTIATTACK.Mishaps.ConfigurationDescription"}}</p>
+  </div>
+
+  <div class="gt-npc-ma-mishap-grid gt-npc-ma-mishap-header" aria-hidden="true">
+    <strong>{{localize "GTNPCMULTIATTACK.Mishaps.CastingClass"}}</strong>
+    <strong>{{localize "GTNPCMULTIATTACK.Mishaps.Tier12"}}</strong>
+    <strong>{{localize "GTNPCMULTIATTACK.Mishaps.Tier34"}}</strong>
+    <strong>{{localize "GTNPCMULTIATTACK.Mishaps.Tier5"}}</strong>
+    <span></span>
+  </div>
+
+  <div class="gt-npc-ma-mishap-mappings">
+    {{#each mappings as |mapping|}}
+      <div class="gt-npc-ma-mishap-grid gt-npc-ma-mishap-row" data-mishap-mapping data-index="{{mapping.index}}">
+        <div class="gt-npc-ma-mishap-class">
+          <select name="classKey" aria-label="{{localize 'GTNPCMULTIATTACK.Mishaps.CastingClass'}}">
+            {{#each mapping.classOptions as |option|}}
+              <option value="{{option.key}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+            {{/each}}
+            <option value="__custom__" {{#if mapping.custom}}selected{{/if}}>{{localize "GTNPCMULTIATTACK.Mishaps.CustomClass"}}</option>
+          </select>
+          <input
+            type="text"
+            name="customClassKey"
+            value="{{#if mapping.custom}}{{mapping.classKey}}{{/if}}"
+            placeholder="{{localize 'GTNPCMULTIATTACK.Mishaps.CustomClassPlaceholder'}}"
+            {{#unless mapping.custom}}hidden{{/unless}}
+          >
+        </div>
+        <input type="text" name="tier12" value="{{mapping.tables.tier12}}" placeholder="{{localize 'GTNPCMULTIATTACK.Mishaps.RollTableUuidPlaceholder'}}">
+        <input type="text" name="tier34" value="{{mapping.tables.tier34}}" placeholder="{{localize 'GTNPCMULTIATTACK.Mishaps.RollTableUuidPlaceholder'}}">
+        <input type="text" name="tier5" value="{{mapping.tables.tier5}}" placeholder="{{localize 'GTNPCMULTIATTACK.Mishaps.RollTableUuidPlaceholder'}}">
+        <button
+          type="button"
+          class="icon"
+          data-action="removeMapping"
+          data-tooltip="{{localize 'GTNPCMULTIATTACK.Mishaps.RemoveClass'}}"
+          aria-label="{{localize 'GTNPCMULTIATTACK.Mishaps.RemoveClass'}}"
+        ><i class="fa-solid fa-trash" aria-hidden="true"></i></button>
+      </div>
+    {{/each}}
+  </div>
+
+  <footer class="gt-npc-ma-mishap-actions">
+    <button type="button" data-action="addMapping">
+      <i class="fa-solid fa-plus" aria-hidden="true"></i>
+      {{localize "GTNPCMULTIATTACK.Mishaps.AddClass"}}
+    </button>
+    <button type="button" data-action="saveMappings">
+      <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+      {{localize "GTNPCMULTIATTACK.Mishaps.Save"}}
+    </button>
+  </footer>
+</div>

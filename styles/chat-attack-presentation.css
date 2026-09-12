@@ -1,0 +1,51 @@
+.chat-message.gt-npc-ma-attack-result-tint,
+.message-content.gt-npc-ma-attack-result-tint,
+.shadowdark.chat-card.gt-npc-ma-attack-result-tint {
+  position: relative;
+  isolation: isolate;
+}
+
+.gt-npc-ma-attack-result-tint > .gt-npc-ma-result-tint-overlay {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  clip-path: inherit;
+  pointer-events: none;
+}
+
+.gt-npc-ma-attack-result-tint > :not(.gt-npc-ma-result-tint-overlay) {
+  position: relative;
+  z-index: 2;
+}
+
+/* MK-Shadowdark gives every direct message child position: relative with a
+ * higher-specificity selector. Keep the tint layer absolute so it does not
+ * collapse to the zero height of its empty element. */
+body.mk-paper-chat
+  :is(#chat-log, .chat-log)
+  :is(.message, .chat-message).gt-npc-ma-attack-result-tint
+  > .gt-npc-ma-result-tint-overlay {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+}
+
+/* MK-Shadowdark's parchment-scroll image has transparent decorative edges.
+ * Keeping the independent tint just inside those edges preserves the paper silhouette. */
+body.mk-paper-chat--parchment-scroll
+  :is(#chat-log, .chat-log)
+  :is(.message, .chat-message).gt-npc-ma-attack-result-tint
+  > .gt-npc-ma-result-tint-overlay {
+  inset: 9px 12px 12px;
+}
+
+.gt-npc-ma-attack-number {
+  margin: 0 0 4px;
+  color: var(--color-text-dark-secondary, #554b42);
+  font-size: var(--font-size-13, 0.8125rem);
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  text-align: right;
+}

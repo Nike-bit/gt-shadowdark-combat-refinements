@@ -1,0 +1,125 @@
+.gt-npc-ma-preset-library .window-content {
+  padding: 0;
+  overflow: hidden;
+}
+
+.gt-npc-ma-preset-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.75fr) minmax(420px, 1.6fr);
+  height: 100%;
+  min-height: 0;
+}
+
+.gt-npc-ma-preset-sidebar,
+.gt-npc-ma-preset-editor {
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+}
+
+.gt-npc-ma-preset-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-right: 1px solid var(--color-border-light-2, #777);
+}
+
+.gt-npc-ma-preset-sidebar-actions,
+.gt-npc-ma-preset-editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.gt-npc-ma-preset-group {
+  display: grid;
+  gap: 5px;
+}
+
+.gt-npc-ma-preset-group h3 {
+  margin: 4px 0 0;
+  border-bottom: 1px solid var(--color-border-light-2, #777);
+}
+
+.gt-npc-ma-preset-entry {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 34px;
+  text-align: left;
+}
+
+.gt-npc-ma-preset-entry small {
+  opacity: 0.7;
+}
+
+.gt-npc-ma-preset-entry.active {
+  outline: 2px solid var(--color-border-highlight, #ff6400);
+  outline-offset: -2px;
+}
+
+.gt-npc-ma-preset-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gt-npc-ma-preset-editor header,
+.gt-npc-ma-preset-editor h2 {
+  margin: 0;
+}
+
+.gt-npc-ma-preset-editor > label,
+.gt-npc-ma-preset-fields-row label {
+  display: grid;
+  gap: 4px;
+  font-weight: 700;
+}
+
+.gt-npc-ma-preset-fields-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.gt-npc-ma-preset-editor textarea {
+  width: 100%;
+  resize: vertical;
+}
+
+.gt-npc-ma-preset-rules-field {
+  flex: 1;
+  min-height: 220px;
+}
+
+.gt-npc-ma-preset-rules-field textarea {
+  height: 100%;
+  min-height: 220px;
+  font-family: var(--font-monospace, monospace);
+  font-size: var(--font-size-12, 0.75rem);
+  font-weight: 400;
+  line-height: 1.35;
+  white-space: pre;
+}
+
+.gt-npc-ma-preset-lock {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  opacity: 0.75;
+  font-size: var(--font-size-12, 0.75rem);
+}
+
+@media (max-width: 700px) {
+  .gt-npc-ma-preset-layout {
+    grid-template-columns: 1fr;
+    overflow: auto;
+  }
+
+  .gt-npc-ma-preset-sidebar {
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border-light-2, #777);
+  }
+}

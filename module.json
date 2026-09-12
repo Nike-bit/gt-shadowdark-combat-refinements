@@ -1,0 +1,126 @@
+{
+  "id": "gt-shadowdark-combat-refinements",
+  "title": "GT Combat Refinements",
+  "description": "Shadowdark combat refinements: NPC multiattack control, scene targeting, chat rerolls, safe declarative Attack Item rule profiles, and NPC/PC quick attack, spell, ability and attribute launchers.",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "Nike-bit"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "esmodules": [
+    "scripts/main.mjs"
+  ],
+  "socket": true,
+  "styles": [
+    "styles/main.css",
+    "styles/target-selector.css",
+    "styles/random-targeting.css",
+    "styles/player-targeting.css",
+    "styles/settings-ui.css",
+    "styles/token-attack-launcher.css",
+    "styles/token-spell-launcher.css",
+    "styles/token-ability-launcher.css",
+    "styles/token-attribute-launcher.css",
+    "styles/chat-reroll-mode.css",
+    "styles/chat-attack-presentation.css",
+    "styles/custom-attack-rules.css",
+    "styles/preset-library.css",
+    "styles/spell-mishaps.css",
+    "styles/gear-theft.css",
+    "styles/save-requests.css"
+  ],
+  "languages": [
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    },
+    {
+      "lang": "el",
+      "name": "Ελληνικά",
+      "path": "lang/el.json"
+    },
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "es",
+      "name": "Español",
+      "path": "lang/es.json"
+    },
+    {
+      "lang": "fa",
+      "name": "فارسی",
+      "path": "lang/fa.json"
+    },
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json"
+    },
+    {
+      "lang": "grc",
+      "name": "Ἀρχαία Ἑλληνικά",
+      "path": "lang/grc.json"
+    },
+    {
+      "lang": "it",
+      "name": "Italiano",
+      "path": "lang/it.json"
+    },
+    {
+      "lang": "ja",
+      "name": "日本語",
+      "path": "lang/ja.json"
+    },
+    {
+      "lang": "la",
+      "name": "Latina",
+      "path": "lang/la.json"
+    },
+    {
+      "lang": "pl",
+      "name": "Polski",
+      "path": "lang/pl.json"
+    },
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
+    },
+    {
+      "lang": "ru",
+      "name": "Русский",
+      "path": "lang/ru.json"
+    },
+    {
+      "lang": "tr",
+      "name": "Türkçe",
+      "path": "lang/tr.json"
+    },
+    {
+      "lang": "zh-CN",
+      "name": "中文",
+      "path": "lang/zh-CN.json"
+    }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "shadowdark",
+        "type": "system",
+        "compatibility": {
+          "minimum": "4.0.0",
+          "verified": "4.0.6"
+        }
+      }
+    ]
+  }
+}

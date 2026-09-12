@@ -1,0 +1,70 @@
+/* Save request cards: a targeted player is asked to roll a check. */
+
+.gt-npc-ma-save-request {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gt-npc-ma-save-request p {
+  margin: 0;
+}
+
+.gt-npc-ma-save-request-prompt {
+  font-size: var(--font-size-12, 0.75rem);
+}
+
+.gt-npc-ma-save-request-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.gt-npc-ma-save-request-actions button {
+  flex: 1 1 auto;
+  min-height: 28px;
+  line-height: 1.2;
+  font-size: var(--font-size-12, 0.75rem);
+}
+
+.gt-npc-ma-save-request-actions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.gt-npc-ma-save-request-cancel,
+.gt-npc-ma-save-request-cancel:hover:not(:disabled) {
+  flex: 0 0 auto;
+  background: #8a8a8a;
+  border-color: #6f6f6f;
+  color: #f4f4f4;
+  box-shadow: none;
+}
+
+.gt-npc-ma-save-request-cancel:hover:not(:disabled) {
+  background: #777;
+}
+
+.gt-npc-ma-save-request-outcome {
+  font-weight: 600;
+}
+
+.gt-npc-ma-save-request-outcome.is-resisted { color: var(--color-level-success, #3f9b4f); }
+.gt-npc-ma-save-request-outcome.is-failed { color: var(--color-level-error, #c62828); }
+.gt-npc-ma-save-request-outcome.is-cancelled {
+  font-weight: 400;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* A rule-requested save fixes its DC; the difficulty field shows it read-only. */
+.gt-npc-ma-attribute-difficulty.is-locked input {
+  opacity: 0.8;
+  cursor: default;
+}
+
+.gt-npc-ma-attribute-difficulty.is-locked .gt-npc-ma-difficulty-toggle {
+  opacity: 0.4;
+  cursor: default;
+}

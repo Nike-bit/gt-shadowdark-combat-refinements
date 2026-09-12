@@ -1,0 +1,116 @@
+.gt-npc-ma-player-targeting {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0;
+  padding: 8px 0;
+  border-top: 1px solid var(--color-border-light-2, #999);
+  border-bottom: 1px solid var(--color-border-light-2, #999);
+}
+
+.gt-npc-ma-player-target-options {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.gt-npc-ma-player-target-options:empty {
+  display: none;
+}
+
+.gt-npc-ma-player-target-options label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+}
+
+.gt-npc-ma-player-target-options input {
+  margin: 0;
+}
+
+.gt-npc-ma-player-target-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.gt-npc-ma-player-target-pool {
+  display: flex;
+  align-items: center;
+  align-content: start;
+  flex-wrap: wrap;
+  min-height: 48px;
+  gap: 6px;
+  padding: 7px;
+  border: 1px solid var(--color-border-light-2, #999);
+  border-radius: 3px;
+  background: rgb(0 0 0 / 10%);
+}
+
+.gt-npc-ma-player-target {
+  display: inline-grid;
+  grid-template-columns: 24px minmax(0, auto);
+  align-items: center;
+  max-width: 100%;
+  gap: 5px;
+  padding: 3px 7px 3px 4px;
+  border: 1px solid var(--color-border-light-2, #999);
+  border-radius: 4px;
+  background: rgb(0 0 0 / 16%);
+}
+
+.gt-npc-ma-player-target img,
+.gt-npc-ma-area-spell-target img {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  object-fit: cover;
+}
+
+.gt-npc-ma-player-target-empty {
+  margin: auto;
+  opacity: 0.65;
+  font-style: italic;
+}
+
+.gt-npc-ma-area-spell-targets {
+  margin-top: 8px;
+}
+
+.gt-npc-ma-area-spell-list {
+  display: grid;
+  gap: 4px;
+}
+
+.gt-npc-ma-area-spell-target {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 28px;
+  align-items: center;
+  gap: 6px;
+}
+
+.gt-npc-ma-area-apply-damage {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  padding: 0;
+}
+
+.gt-npc-ma-player-sees-hidden {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--font-size-11, 0.6875rem);
+  white-space: nowrap;
+}
+
+.gt-npc-ma-player-sees-hidden input { margin: 0; }
+
+/* A token that is only eligible because Sees Hidden is on. */
+.gt-npc-ma-player-target.is-hidden-token { opacity: 0.72; }
+.gt-npc-ma-player-target.is-hidden-token img { filter: grayscale(0.5); }

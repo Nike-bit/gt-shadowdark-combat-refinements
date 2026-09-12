@@ -1,0 +1,33 @@
+.gt-npc-ma-reroll-modes {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.gt-npc-ma-reroll-mode {
+  width: auto;
+  min-width: 27px;
+  height: 22px;
+  min-height: 22px;
+  padding: 0 3px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: inherit;
+  font-weight: 800;
+  line-height: inherit;
+}
+
+.gt-npc-ma-reroll-mode:hover,
+.gt-npc-ma-reroll-mode:focus-visible,
+.gt-npc-ma-reroll-mode.active {
+  color: var(--color-warm-1, #ee9b3a);
+  text-shadow: 0 0 5px currentcolor;
+}
+
+.shadowdark.chat-card .sub-heading:has(.gt-npc-ma-reroll-modes) {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}

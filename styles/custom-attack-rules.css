@@ -1,0 +1,262 @@
+/* The section is a Shadowdark SD-box: the system draws its frame and header. */
+.gt-npc-ma-custom-rules.SD-box {
+  margin: 8px 0 0;
+}
+
+.gt-npc-ma-custom-rules.SD-box > .content {
+  padding: 6px 8px 8px;
+}
+
+.gt-npc-ma-manual-rules {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px 14px;
+  margin: 7px 0;
+  padding: 7px 0;
+  border-top: 1px solid var(--color-border-light-2, #999);
+  border-bottom: 1px solid var(--color-border-light-2, #999);
+}
+
+.gt-npc-ma-manual-rules > strong {
+  flex-basis: 100%;
+}
+
+.gt-npc-ma-manual-rules label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+}
+
+.gt-npc-ma-manual-rules input {
+  margin: 0;
+}
+
+.gt-npc-ma-rule-header .gt-npc-ma-rule-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 6px;
+}
+
+.gt-npc-ma-rule-header input {
+  margin: 0;
+}
+
+.gt-npc-ma-rule-presets {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) auto auto auto;
+  align-items: end;
+  gap: 5px;
+}
+
+/* Same box model as Add/Replace so the three share one height; the icon is
+   centred on the same line box the text buttons use. */
+.gt-npc-ma-rule-presets .gt-npc-ma-open-preset-library {
+  display: grid;
+  place-items: center;
+  box-sizing: content-box;
+  height: 28px;
+  width: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+  line-height: 1;
+}
+
+.gt-npc-ma-rule-presets .gt-npc-ma-open-preset-library i {
+  margin: 0;
+}
+
+.gt-npc-ma-rule-presets > label {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  font-size: var(--font-size-12, 0.75rem);
+}
+
+.gt-npc-ma-rule-presets select {
+  width: 100%;
+  min-width: 0;
+}
+
+.gt-npc-ma-rule-presets button {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.gt-npc-ma-rule-presets[hidden] {
+  display: none;
+}
+
+.gt-npc-ma-rule-content {
+  display: grid;
+  gap: 7px;
+}
+
+.gt-npc-ma-rule-content[hidden],
+.gt-npc-ma-rule-script[hidden] {
+  display: none;
+}
+
+.gt-npc-ma-applied-heading {
+  margin-top: 2px;
+}
+
+.gt-npc-ma-applied-features {
+  display: grid;
+  gap: 4px;
+}
+
+.gt-npc-ma-feature-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border: 1px solid var(--color-border-light-2, #999);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--color-bg-option, transparent) 65%, transparent);
+}
+
+.gt-npc-ma-feature-row label,
+.gt-npc-ma-script-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+
+.gt-npc-ma-feature-row input,
+.gt-npc-ma-script-toggle input {
+  margin: 0;
+}
+
+.gt-npc-ma-remove-feature {
+  width: 28px;
+  min-width: 28px;
+  margin: 0;
+  padding: 0;
+}
+
+.gt-npc-ma-no-features {
+  margin: 0;
+  font-size: var(--font-size-12, 0.75rem);
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.gt-npc-ma-script-toggle {
+  justify-self: start;
+  font-weight: 700;
+}
+
+.gt-npc-ma-rule-script {
+  display: grid;
+  gap: 5px;
+}
+
+.gt-npc-ma-script-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.gt-npc-ma-script-actions button {
+  margin: 0;
+}
+
+.gt-npc-ma-rule-source {
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  font-family: var(--font-monospace, monospace);
+  font-size: var(--font-size-12, 0.75rem);
+  line-height: 1.35;
+  white-space: pre;
+}
+
+.gt-npc-ma-rule-source[hidden] {
+  display: none;
+}
+
+.gt-npc-ma-rule-status {
+  margin: 0;
+  font-size: var(--font-size-12, 0.75rem);
+  font-style: italic;
+}
+
+.gt-npc-ma-rule-status[data-state="valid"] {
+  color: var(--color-level-success, #2f8f46);
+}
+
+.gt-npc-ma-rule-status[data-state="invalid"] {
+  color: var(--color-level-error, #b00020);
+}
+
+
+@media (max-width: 520px) {
+  .gt-npc-ma-rule-presets {
+    grid-template-columns: 1fr auto auto auto;
+  }
+
+  .gt-npc-ma-rule-presets > label {
+    grid-column: 1 / -1;
+  }
+}
+.gt-npc-ma-sever-result {
+  padding: 4px 0;
+}
+
+.gt-npc-ma-sever-result h3,
+.gt-npc-ma-sever-result p {
+  margin: 0 0 4px;
+}
+
+/* Inline parameters under an applied feature. */
+.gt-npc-ma-feature-parameters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 4px 10px;
+  margin: -2px 0 8px 22px;
+  padding: 6px 8px;
+  border-left: 2px solid var(--color-border-light-2, #999);
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 0 4px 4px 0;
+}
+
+.gt-npc-ma-parameter {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.gt-npc-ma-parameter > span {
+  font-size: var(--font-size-11, 0.6875rem);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+}
+
+.gt-npc-ma-parameter > input,
+.gt-npc-ma-parameter > select {
+  width: 100%;
+  min-width: 0;
+  height: 24px;
+  font-size: var(--font-size-12, 0.75rem);
+}
+
+.gt-npc-ma-parameter.is-boolean { flex-direction: row; align-items: center; gap: 6px; }
+.gt-npc-ma-parameter.is-boolean > input { width: auto; height: auto; margin: 0; }
+.gt-npc-ma-parameter.is-text { grid-column: 1 / -1; }
+
+.gt-npc-ma-attribute-outcome.is-save.is-resisted > span:last-child { color: var(--color-level-success, #3f9b4f); }
+.gt-npc-ma-attribute-outcome.is-save.is-suffered > span:last-child { color: var(--color-level-error, #c62828); }
+.gt-npc-ma-consequence-note { margin: 2px 0 0; font-style: italic; opacity: 0.8; }
+
+.gt-npc-ma-rule-hint {
+  margin: 0 0 6px;
+  font-size: var(--font-size-11, 0.7rem);
+  font-style: italic;
+  opacity: 0.75;
+}

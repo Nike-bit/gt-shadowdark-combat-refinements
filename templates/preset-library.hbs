@@ -1,0 +1,135 @@
+<div class="gt-npc-ma-preset-layout">
+  <aside class="gt-npc-ma-preset-sidebar">
+    <input type="file" name="presetImportFile" accept="application/json,.json" hidden>
+
+    <input
+      type="search"
+      name="presetSearch"
+      placeholder="{{localize 'GTNPCMULTIATTACK.Presets.Search'}}"
+      aria-label="{{localize 'GTNPCMULTIATTACK.Presets.Search'}}"
+    >
+
+    <div class="gt-npc-ma-preset-sidebar-actions">
+      <button type="button" data-action="newPreset">
+        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+        {{localize "GTNPCMULTIATTACK.Presets.New"}}
+      </button>
+      <button type="button" data-action="importPresets">
+        <i class="fa-solid fa-file-import" aria-hidden="true"></i>
+        {{localize "GTNPCMULTIATTACK.Presets.Import"}}
+      </button>
+    </div>
+
+    <section class="gt-npc-ma-preset-group">
+      <h3>{{localize "GTNPCMULTIATTACK.Presets.BuiltIn"}}</h3>
+      {{#each builtIns}}
+        <button
+          type="button"
+          class="gt-npc-ma-preset-entry {{#if selected}}active{{/if}}"
+          data-action="selectPreset"
+          data-preset-key="{{key}}"
+          data-preset-search="{{searchText}}"
+        >
+          <strong>{{name}}</strong>
+          <small>{{category}}</small>
+        </button>
+      {{/each}}
+    </section>
+
+    <section class="gt-npc-ma-preset-group">
+      <h3>{{localize "GTNPCMULTIATTACK.Presets.CustomPresets"}}</h3>
+      {{#if hasCustomPresets}}
+        {{#each customPresets}}
+          <button
+            type="button"
+            class="gt-npc-ma-preset-entry {{#if selected}}active{{/if}}"
+            data-action="selectPreset"
+            data-preset-key="{{key}}"
+            data-preset-search="{{searchText}}"
+          >
+            <strong>{{name}}</strong>
+            <small>{{category}}</small>
+          </button>
+        {{/each}}
+      {{else}}
+        <p class="hint">{{localize "GTNPCMULTIATTACK.Presets.NoCustomPresets"}}</p>
+      {{/if}}
+    </section>
+
+    <button type="button" data-action="exportLibrary">
+      <i class="fa-solid fa-file-export" aria-hidden="true"></i>
+      {{localize "GTNPCMULTIATTACK.Presets.ExportLibrary"}}
+    </button>
+  </aside>
+
+  <section class="gt-npc-ma-preset-editor">
+    {{#if editor}}
+      <header>
+        <div>
+          <h2>{{editor.name}}</h2>
+          {{#unless editor.isCustom}}
+            <span class="gt-npc-ma-preset-lock">
+              <i class="fa-solid fa-lock" aria-hidden="true"></i>
+              {{localize "GTNPCMULTIATTACK.Presets.BuiltInReadOnly"}}
+            </span>
+          {{/unless}}
+        </div>
+      </header>
+
+      <input type="hidden" name="id" value="{{editor.id}}">
+
+      <label>
+        <span>{{localize "GTNPCMULTIATTACK.Presets.Name"}}</span>
+        <input type="text" name="name" value="{{editor.name}}" maxlength="100" {{#unless editor.isCustom}}readonly{{/unless}}>
+      </label>
+
+      <label>
+        <span>{{localize "GTNPCMULTIATTACK.Presets.Description"}}</span>
+        <textarea name="description" rows="3" maxlength="500" {{#unless editor.isCustom}}readonly{{/unless}}>{{editor.description}}</textarea>
+      </label>
+
+      <div class="gt-npc-ma-preset-fields-row">
+        <label>
+          <span>{{localize "GTNPCMULTIATTACK.Presets.Category"}}</span>
+          <input type="text" name="category" value="{{editor.category}}" maxlength="80" {{#unless editor.isCustom}}readonly{{/unless}}>
+        </label>
+        <label>
+          <span>{{localize "GTNPCMULTIATTACK.Presets.Tags"}}</span>
+          <input type="text" name="tags" value="{{editor.tagsText}}" {{#unless editor.isCustom}}readonly{{/unless}}>
+        </label>
+      </div>
+
+      <label class="gt-npc-ma-preset-rules-field">
+        <span>{{localize "GTNPCMULTIATTACK.Presets.RulesJson"}}</span>
+        <textarea name="rulesJson" rows="16" spellcheck="false" {{#unless editor.isCustom}}readonly{{/unless}}>{{editor.rulesJson}}</textarea>
+      </label>
+
+      <div class="gt-npc-ma-preset-editor-actions">
+        {{#if editor.isCustom}}
+          <button type="button" data-action="savePreset">
+            <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+            {{localize "GTNPCMULTIATTACK.Presets.Save"}}
+          </button>
+          <button type="button" data-action="deletePreset">
+            <i class="fa-solid fa-trash" aria-hidden="true"></i>
+            {{localize "GTNPCMULTIATTACK.Presets.Delete"}}
+          </button>
+        {{/if}}
+        <button type="button" data-action="duplicatePreset">
+          <i class="fa-solid fa-copy" aria-hidden="true"></i>
+          {{localize "GTNPCMULTIATTACK.Presets.Duplicate"}}
+        </button>
+        <button type="button" data-action="exportPreset">
+          <i class="fa-solid fa-file-export" aria-hidden="true"></i>
+          {{localize "GTNPCMULTIATTACK.Presets.Export"}}
+        </button>
+        <button type="button" data-action="copyPreset">
+          <i class="fa-solid fa-clipboard" aria-hidden="true"></i>
+          {{localize "GTNPCMULTIATTACK.Presets.CopyJson"}}
+        </button>
+      </div>
+    {{else}}
+      <p class="hint">{{localize "GTNPCMULTIATTACK.Presets.NoPresetSelected"}}</p>
+    {{/if}}
+  </section>
+</div>

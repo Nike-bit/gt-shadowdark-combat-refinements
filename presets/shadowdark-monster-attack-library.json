@@ -1,0 +1,739 @@
+{
+  "version": 1,
+  "presets": [
+    {
+      "id": "gore",
+      "name": "Gore",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "gore",
+          "name": "Gore",
+          "enabled": true,
+          "trigger": "afterAttackBatch",
+          "scope": "attackSession",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 2
+            }
+          ],
+          "effects": [
+            {
+              "type": "extraDamageDie",
+              "count": 1,
+              "oncePerTarget": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "crush",
+      "name": "Crush",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "crush",
+          "name": "Crush",
+          "enabled": true,
+          "trigger": "afterAttackBatch",
+          "scope": "attackSession",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 2
+            }
+          ],
+          "effects": [
+            {
+              "type": "extraDamageDie",
+              "count": 1,
+              "oncePerTarget": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "charge",
+      "name": "Charge",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "charge",
+          "name": "Charge",
+          "enabled": true,
+          "activation": "manual",
+          "attackLimit": 1,
+          "trigger": "afterAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "extraBaseDamage",
+              "multiplier": 2,
+              "oncePerTarget": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ambush",
+      "name": "Ambush",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "ambush",
+          "name": "Ambush",
+          "enabled": true,
+          "activation": "manual",
+          "trigger": "afterAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "extraDamageDie",
+              "count": 1,
+              "oncePerTarget": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rampage",
+      "name": "Rampage",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "rampage",
+          "name": "Rampage",
+          "enabled": true,
+          "activation": "manual",
+          "attackLimit": 1,
+          "trigger": "afterAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "extraBaseDamage",
+              "multiplier": 2,
+              "oncePerTarget": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "backstab",
+      "name": "Backstab",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "backstab",
+          "name": "Backstab",
+          "enabled": true,
+          "activation": "manual",
+          "trigger": "afterAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "extraBaseDamage",
+              "multiplier": 1,
+              "oncePerTarget": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "assassinate",
+      "name": "Assassinate",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "assassinate",
+          "name": "Assassinate",
+          "enabled": true,
+          "activation": "manual",
+          "trigger": "afterAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "extraBaseDamage",
+              "multiplier": 2,
+              "oncePerTarget": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "algae-eater",
+      "name": "Algae-Eater",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "algae-eater",
+          "name": "Algae-Eater",
+          "enabled": true,
+          "activation": "manual",
+          "trigger": "beforeAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [],
+          "effects": [
+            {
+              "type": "forceAdvantage"
+            },
+            {
+              "type": "selfDamage",
+              "formula": "1d4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shatter",
+      "name": "Shatter",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "shatter",
+          "name": "Shatter",
+          "enabled": true,
+          "activation": "manual",
+          "trigger": "afterAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "shatterGear",
+              "oncePerTarget": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mob",
+      "name": "Mob",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "mob",
+          "name": "Mob",
+          "enabled": true,
+          "activation": "manual",
+          "trigger": "beforeAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [],
+          "effects": [
+            {
+              "type": "damageBonus",
+              "amount": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pod-hunter",
+      "name": "Pod Hunter",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "pod-hunter",
+          "name": "Pod Hunter",
+          "enabled": true,
+          "activation": "manual",
+          "trigger": "beforeAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [],
+          "effects": [
+            {
+              "type": "damageBonus",
+              "amount": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "swallow",
+      "name": "Swallow",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "swallow",
+          "name": "Swallow",
+          "enabled": true,
+          "trigger": "afterAttackBatch",
+          "scope": "attackSession",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "swallow",
+              "dc": 12,
+              "damage": "1d8",
+              "releaseDamage": 15,
+              "oncePerTarget": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "grab",
+      "name": "Grab",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "grab",
+          "name": "Grab",
+          "enabled": true,
+          "trigger": "afterAttackBatch",
+          "scope": "attackSession",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "stealGear",
+              "mode": "carried",
+              "selection": "random",
+              "replaceDamage": false,
+              "oncePerTarget": true,
+              "targetActorTypes": [
+                "Player"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rage",
+      "name": "Rage",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "rage",
+          "name": "Rage",
+          "enabled": true,
+          "trigger": "beforeAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "attackerInjured"
+            }
+          ],
+          "effects": [
+            {
+              "type": "replaceDamageDie",
+              "from": 6,
+              "to": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "greedy",
+      "name": "Greedy",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "greedy",
+          "name": "Greedy",
+          "enabled": true,
+          "activation": "manual",
+          "attackLimit": 1,
+          "trigger": "afterAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "stealGear",
+              "mode": "carried",
+              "selection": "prompt",
+              "replaceDamage": true,
+              "oncePerTarget": true,
+              "targetActorTypes": [
+                "Player"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "poison",
+      "name": "Poison (Damage)",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "poison",
+          "name": "Poison (Damage)",
+          "enabled": true,
+          "trigger": "afterAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "save",
+              "ability": "con",
+              "dc": 12,
+              "onFailure": {
+                "damage": "1d4"
+              },
+              "oncePerTarget": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "poison-paralyze",
+      "name": "Poison (Paralyze)",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "poison-paralyze",
+          "name": "Poison (Paralyze)",
+          "enabled": true,
+          "trigger": "afterAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "save",
+              "ability": "con",
+              "dc": 12,
+              "onFailure": {
+                "condition": "paralysis",
+                "duration": {
+                  "formula": "1d4",
+                  "unit": "rounds"
+                }
+              },
+              "oncePerTarget": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "poison-sleep",
+      "name": "Poison (Sleep)",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "poison-sleep",
+          "name": "Poison (Sleep)",
+          "enabled": true,
+          "trigger": "afterAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "save",
+              "ability": "con",
+              "dc": 15,
+              "onFailure": {
+                "condition": "sleep",
+                "duration": {
+                  "formula": "1d8",
+                  "unit": "hours"
+                }
+              },
+              "oncePerTarget": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "poison-lethal",
+      "name": "Poison (Lethal)",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "poison-lethal",
+          "name": "Poison (Lethal)",
+          "enabled": true,
+          "trigger": "afterAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "save",
+              "ability": "con",
+              "dc": 15,
+              "onFailure": {
+                "setHp": 0,
+                "deathTimer": "1"
+              },
+              "oncePerTarget": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "petrify",
+      "name": "Petrify",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "petrify",
+          "name": "Petrify",
+          "enabled": true,
+          "trigger": "afterAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "save",
+              "ability": "con",
+              "dc": 12,
+              "onFailure": {
+                "condition": "petrified",
+                "limb": false
+              },
+              "oncePerTarget": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "knock",
+      "name": "Knock",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "knock",
+          "name": "Knock",
+          "enabled": true,
+          "trigger": "afterAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "save",
+              "ability": "str",
+              "dc": 9,
+              "onFailure": {
+                "condition": "prone",
+                "note": "Pushed a close distance and knocked down."
+              },
+              "oncePerTarget": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ability-drain",
+      "name": "Ability Drain",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "ability-drain",
+          "name": "Ability Drain",
+          "enabled": true,
+          "trigger": "afterAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "sameTargetHits",
+              "minimum": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "abilityDamage",
+              "ability": "wis",
+              "formula": "1d6",
+              "note": "",
+              "oncePerTarget": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sever",
+      "name": "Sever",
+      "description": "",
+      "category": "",
+      "tags": [],
+      "schemaVersion": 1,
+      "rules": [
+        {
+          "id": "sever",
+          "name": "Sever",
+          "enabled": true,
+          "trigger": "afterAttackBatch",
+          "scope": "currentBatch",
+          "conditions": [
+            {
+              "type": "naturalAttackRollAtLeast",
+              "minimum": 18
+            }
+          ],
+          "effects": [
+            {
+              "type": "severLimb",
+              "oncePerTarget": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

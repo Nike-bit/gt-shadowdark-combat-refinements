@@ -1,0 +1,33 @@
+.gt-npc-ma-spell-mishap-configuration .window-content {
+  overflow: hidden;
+}
+
+.gt-npc-ma-spell-mishap-configuration [data-application-part="main"] {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  height: 100%;
+  gap: 8px;
+}
+
+.gt-npc-ma-spell-mishap-configuration .gt-npc-ma-mishap-mappings {
+  min-height: 120px;
+  overflow: auto;
+}
+
+.gt-npc-ma-spell-mishap-result {
+  margin-top: 8px;
+  padding: 8px;
+  background: rgb(102 0 51 / 50%);
+  border: 1px solid rgb(102 0 51 / 80%);
+  border-radius: 4px;
+}
+
+.gt-npc-ma-spell-mishap-result h3,
+.gt-npc-ma-spell-mishap-result p {
+  margin: 0 0 5px;
+}
+
+.gt-npc-ma-spell-mishap-result .gt-npc-ma-spell-mishap-entry:last-child > :last-child,
+.gt-npc-ma-spell-mishap-result > :last-child {
+  margin-bottom: 0;
+}

@@ -1,0 +1,46 @@
+<div class="gt-npc-ma-theft-layout">
+  <p class="gt-npc-ma-theft-intro">{{hint}}</p>
+
+  <div class="gt-npc-ma-theft-list">
+    {{#each sections as |section|}}
+      <section class="gt-npc-ma-theft-section is-{{section.key}}">
+        <h4>{{section.label}}</h4>
+        {{#each section.entries as |entry|}}
+          <button
+            type="button"
+            class="gt-npc-ma-theft-entry{{#if entry.selected}} is-selected{{/if}}"
+            data-action="toggleEntry"
+            data-entry-id="{{entry.id}}"
+            aria-pressed="{{#if entry.selected}}true{{else}}false{{/if}}"
+          >
+            {{#if entry.img}}
+              <img src="{{entry.img}}" alt="">
+            {{else}}
+              <i class="fa-solid fa-coins fa-fw" aria-hidden="true"></i>
+            {{/if}}
+            <span class="gt-npc-ma-theft-name">{{entry.name}}</span>
+            <small class="gt-npc-ma-theft-detail">{{entry.detail}}</small>
+          </button>
+        {{/each}}
+      </section>
+    {{else}}
+      <p class="gt-npc-ma-theft-empty">{{localize "GTNPCMULTIATTACK.Inventory.TheftEmpty"}}</p>
+    {{/each}}
+  </div>
+
+  <footer class="gt-npc-ma-theft-actions">
+    <button type="button" data-action="stealNothing">
+      <i class="fa-solid fa-ban" aria-hidden="true"></i>
+      {{localize "GTNPCMULTIATTACK.Inventory.StealNothing"}}
+    </button>
+    <button
+      type="button"
+      class="gt-npc-ma-theft-confirm"
+      data-action="steal"
+      {{#unless hasSelection}}disabled{{/unless}}
+    >
+      <i class="fa-solid fa-dice" aria-hidden="true"></i>
+      {{localize "GTNPCMULTIATTACK.Inventory.Steal"}}
+    </button>
+  </footer>
+</div>
