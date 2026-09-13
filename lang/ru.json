@@ -26,6 +26,7 @@
   "GTNPCMULTIATTACK.Settings.YieldToMkTargetingHint": "Когда помощник прицеливания MK-Shadowdark находится в том же диалоге броска, что и строка «Цель» этого модуля, его дублирующая панель скрывается, а выбранные здесь цели отражаются на холсте, чтобы его блокировка броска их приняла. Без MK-Shadowdark ничего не делает.",
   "GTNPCMULTIATTACK.Targets.SeesHidden": "Видит скрытых",
   "GTNPCMULTIATTACK.Targets.UseTargetTool": "Выберите цели клавишей T.",
+  "GTNPCMULTIATTACK.Targets.SelfRange": "Дальность: на себя — цель — сам заклинатель.",
   "GTNPCMULTIATTACK.Targets.Area": "Область",
   "GTNPCMULTIATTACK.Targets.ApplySpellDamage": "Применить урон заклинания к этой цели",
   "GTNPCMULTIATTACK.Targets.ShowNPCs": "Цели НПС",

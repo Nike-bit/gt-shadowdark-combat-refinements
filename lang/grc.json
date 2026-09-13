@@ -26,6 +26,7 @@
   "GTNPCMULTIATTACK.Settings.YieldToMkTargetingHint": "Ὅταν ὁ τοῦ MK-Shadowdark στοχεύσεως βοηθὸς ἐν τῷ αὐτῷ βόλου διαλόγῳ ᾖ ᾧ ἡ τοῦδε τοῦ ἐργαλείου τοῦ σκοποῦ γραμμή, τὸ διπλοῦν αὐτοῦ πινάκιον κρύπτεται καὶ οἱ ἐνθάδε αἱρεθέντες σκοποὶ εἰς τὸν πίνακα ἀντανακλῶνται, ἵνα ἡ τοῦ βόλου πύλη αὐτοὺς δέχηται. Ἄνευ MK-Shadowdark ἀνενεργόν.",
   "GTNPCMULTIATTACK.Targets.SeesHidden": "Τὰ κεκρυμμένα ὁρᾷ",
   "GTNPCMULTIATTACK.Targets.UseTargetTool": "Τοὺς σκοποὺς τῷ T ἑλοῦ.",
+  "GTNPCMULTIATTACK.Targets.SelfRange": "Ἀπόστασις· ἑαυτός — ὁ ἐπᾴδων ὁ σκοπός.",
   "GTNPCMULTIATTACK.Targets.Area": "Χώρα",
   "GTNPCMULTIATTACK.Targets.ApplySpellDamage": "Τὴν τῆς ἐπῳδῆς βλάβην τῷδε τῷ σκοπῷ ἐπιθεῖναι",
   "GTNPCMULTIATTACK.Targets.ShowNPCs": "Σκοποὶ NPC",

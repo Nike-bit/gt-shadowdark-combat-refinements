@@ -114,3 +114,15 @@
 /* A token that is only eligible because Sees Hidden is on. */
 .gt-npc-ma-player-target.is-hidden-token { opacity: 0.72; }
 .gt-npc-ma-player-target.is-hidden-token img { filter: grayscale(0.5); }
+
+/* A Self-range spell: the caster is the only target, shown locked. */
+.gt-npc-ma-player-targeting.is-self .gt-npc-ma-player-target.is-self {
+  opacity: 0.9;
+  cursor: default;
+}
+
+.gt-npc-ma-player-target-self-note {
+  font-size: var(--font-size-11, 0.7rem);
+  font-style: italic;
+  opacity: 0.75;
+}

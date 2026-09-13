@@ -26,6 +26,7 @@
   "GTNPCMULTIATTACK.Settings.YieldToMkTargetingHint": "Quando o Assistente de Alvos do MK-Shadowdark aparece no mesmo diálogo de rolagem que a linha Alvo deste módulo, oculta seu painel duplicado e espelha no canvas os alvos escolhidos aqui, para que seu bloqueio de rolagem os aceite. Sem MK-Shadowdark não tem efeito.",
   "GTNPCMULTIATTACK.Targets.SeesHidden": "Vê ocultos",
   "GTNPCMULTIATTACK.Targets.UseTargetTool": "Selecione alvos com T.",
+  "GTNPCMULTIATTACK.Targets.SelfRange": "Alcance: Pessoal — o conjurador é o alvo.",
   "GTNPCMULTIATTACK.Targets.Area": "Área",
   "GTNPCMULTIATTACK.Targets.ApplySpellDamage": "Aplicar dano da magia a este alvo",
   "GTNPCMULTIATTACK.Targets.ShowNPCs": "Alvos NPC",

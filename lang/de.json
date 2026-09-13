@@ -26,6 +26,7 @@
   "GTNPCMULTIATTACK.Settings.YieldToMkTargetingHint": "Wenn der Zielassistent von MK-Shadowdark im selben Wurfdialog wie die Zielzeile dieses Moduls erscheint, wird sein doppeltes Feld ausgeblendet und die hier gewählten Ziele werden auf die Karte gespiegelt, damit seine Wurfsperre sie akzeptiert. Ohne MK-Shadowdark ohne Wirkung.",
   "GTNPCMULTIATTACK.Targets.SeesHidden": "Sieht Verborgene",
   "GTNPCMULTIATTACK.Targets.UseTargetTool": "Ziele mit T auswählen.",
+  "GTNPCMULTIATTACK.Targets.SelfRange": "Reichweite: Selbst – der Zaubernde ist das Ziel.",
   "GTNPCMULTIATTACK.Targets.Area": "Fläche",
   "GTNPCMULTIATTACK.Targets.ApplySpellDamage": "Zauberschaden auf dieses Ziel anwenden",
   "GTNPCMULTIATTACK.Targets.ShowNPCs": "NSC-Ziele",

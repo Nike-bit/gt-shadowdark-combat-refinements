@@ -26,6 +26,7 @@
   "GTNPCMULTIATTACK.Settings.YieldToMkTargetingHint": "Cum Adiutor Collineationis MK-Shadowdark in eodem iactus dialogo appareat quo linea Scopi huius moduli, tabula eius duplicata absconditur et scopi hic electi in tabulam referuntur, ut claustrum iactus eius eos accipiat. Sine MK-Shadowdark nihil agit.",
   "GTNPCMULTIATTACK.Targets.SeesHidden": "Occulta videt",
   "GTNPCMULTIATTACK.Targets.UseTargetTool": "Scopta littera T elige.",
+  "GTNPCMULTIATTACK.Targets.SelfRange": "Spatium: sui — incantator scopus est.",
   "GTNPCMULTIATTACK.Targets.Area": "Area",
   "GTNPCMULTIATTACK.Targets.ApplySpellDamage": "Damnum incantamenti huic scopo applica",
   "GTNPCMULTIATTACK.Targets.ShowNPCs": "Scopta NPC",

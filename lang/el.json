@@ -26,6 +26,7 @@
   "GTNPCMULTIATTACK.Settings.YieldToMkTargetingHint": "Όταν ο Βοηθός Στόχευσης του MK-Shadowdark βρίσκεται στο ίδιο παράθυρο ζαριάς με τη σειρά Στόχου αυτής της μονάδας, κρύβεται το διπλό του πλαίσιο και οι στόχοι που επιλέγονται εδώ αντικατοπτρίζονται στον καμβά, ώστε η πύλη ζαριάς του να τους δέχεται. Χωρίς MK-Shadowdark δεν έχει καμία επίδραση.",
   "GTNPCMULTIATTACK.Targets.SeesHidden": "Βλέπει Κρυμμένους",
   "GTNPCMULTIATTACK.Targets.UseTargetTool": "Επιλέξτε στόχους με T.",
+  "GTNPCMULTIATTACK.Targets.SelfRange": "Εμβέλεια: Εαυτός — στόχος είναι ο ίδιος ο ρίπτης.",
   "GTNPCMULTIATTACK.Targets.Area": "Περιοχή",
   "GTNPCMULTIATTACK.Targets.ApplySpellDamage": "Εφαρμογή ζημιάς ξορκιού σε αυτόν τον στόχο",
   "GTNPCMULTIATTACK.Targets.ShowNPCs": "Στόχοι NPC",

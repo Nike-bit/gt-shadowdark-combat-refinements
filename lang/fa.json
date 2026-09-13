@@ -26,6 +26,7 @@
   "GTNPCMULTIATTACK.Settings.YieldToMkTargetingHint": "وقتی دستیار هدف‌گیری MK-Shadowdark در همان پنجرهٔ پرتابِ ردیف هدف این ماژول ظاهر شود، پنل تکراری آن پنهان شده و هدف‌های انتخاب‌شده در اینجا روی نقشه بازتاب می‌یابند تا قفل پرتاب آن آن‌ها را بپذیرد. بدون MK-Shadowdark اثری ندارد.",
   "GTNPCMULTIATTACK.Targets.SeesHidden": "پنهان‌ها را می‌بیند",
   "GTNPCMULTIATTACK.Targets.UseTargetTool": "هدف‌ها را با T انتخاب کنید.",
+  "GTNPCMULTIATTACK.Targets.SelfRange": "برد: خود — هدف خودِ افسونگر است.",
   "GTNPCMULTIATTACK.Targets.Area": "ناحیه",
   "GTNPCMULTIATTACK.Targets.ApplySpellDamage": "آسیب جادو را به این هدف اعمال کن",
   "GTNPCMULTIATTACK.Targets.ShowNPCs": "هدف‌های NPC",

@@ -26,6 +26,7 @@
   "GTNPCMULTIATTACK.Settings.YieldToMkTargetingHint": "MK-Shadowdark のターゲティング補助が本モジュールのターゲット行と同じロールダイアログに現れた場合、重複するパネルを隠し、ここで選んだターゲットをキャンバスに反映して、その補助のロール制限が通るようにします。MK-Shadowdark がなければ何もしません。",
   "GTNPCMULTIATTACK.Targets.SeesHidden": "隠れた対象を見る",
   "GTNPCMULTIATTACK.Targets.UseTargetTool": "Tで対象を選択してください。",
+  "GTNPCMULTIATTACK.Targets.SelfRange": "射程: 自身 — 術者自身が目標です。",
   "GTNPCMULTIATTACK.Targets.Area": "範囲",
   "GTNPCMULTIATTACK.Targets.ApplySpellDamage": "この対象に呪文ダメージを適用",
   "GTNPCMULTIATTACK.Targets.ShowNPCs": "NPC対象",

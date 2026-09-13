@@ -26,6 +26,7 @@
   "GTNPCMULTIATTACK.Settings.YieldToMkTargetingHint": "当 MK-Shadowdark 的目标辅助与本模块的目标行出现在同一掷骰窗口时，隐藏其重复面板，并将此处选择的目标同步到画布，使其掷骰限制得以通过。没有 MK-Shadowdark 时不起作用。",
   "GTNPCMULTIATTACK.Targets.SeesHidden": "看见隐藏目标",
   "GTNPCMULTIATTACK.Targets.UseTargetTool": "按 T 选择目标。",
+  "GTNPCMULTIATTACK.Targets.SelfRange": "射程：自身——施法者即目标。",
   "GTNPCMULTIATTACK.Targets.Area": "范围",
   "GTNPCMULTIATTACK.Targets.ApplySpellDamage": "对该目标施加法术伤害",
   "GTNPCMULTIATTACK.Targets.ShowNPCs": "NPC目标",

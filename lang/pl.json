@@ -26,6 +26,7 @@
   "GTNPCMULTIATTACK.Settings.YieldToMkTargetingHint": "Gdy Asystent Celowania MK-Shadowdark pojawia się w tym samym oknie rzutu co wiersz Cel tego modułu, ukrywa jego zdublowany panel i odwzorowuje wybrane tu cele na mapie, aby jego blokada rzutu je zaakceptowała. Bez MK-Shadowdark nie ma efektu.",
   "GTNPCMULTIATTACK.Targets.SeesHidden": "Widzi ukrytych",
   "GTNPCMULTIATTACK.Targets.UseTargetTool": "Wybierz cele klawiszem T.",
+  "GTNPCMULTIATTACK.Targets.SelfRange": "Zasięg: Własny — celem jest rzucający.",
   "GTNPCMULTIATTACK.Targets.Area": "Obszar",
   "GTNPCMULTIATTACK.Targets.ApplySpellDamage": "Zastosuj obrażenia zaklęcia do tego celu",
   "GTNPCMULTIATTACK.Targets.ShowNPCs": "Cele BN",

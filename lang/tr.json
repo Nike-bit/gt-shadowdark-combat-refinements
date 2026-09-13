@@ -26,6 +26,7 @@
   "GTNPCMULTIATTACK.Settings.YieldToMkTargetingHint": "MK-Shadowdark'ın Hedefleme Yardımcısı bu modülün Hedef satırıyla aynı zar penceresindeyse, yinelenen panelini gizler ve burada seçilen hedefleri tuvale yansıtır; böylece zar kilidi bunları kabul eder. MK-Shadowdark olmadan etkisizdir.",
   "GTNPCMULTIATTACK.Targets.SeesHidden": "Gizlileri görür",
   "GTNPCMULTIATTACK.Targets.UseTargetTool": "Hedefleri T ile seçin.",
+  "GTNPCMULTIATTACK.Targets.SelfRange": "Menzil: Kendi — hedef büyücünün kendisidir.",
   "GTNPCMULTIATTACK.Targets.Area": "Alan",
   "GTNPCMULTIATTACK.Targets.ApplySpellDamage": "Büyü hasarını bu hedefe uygula",
   "GTNPCMULTIATTACK.Targets.ShowNPCs": "NPC hedefleri",

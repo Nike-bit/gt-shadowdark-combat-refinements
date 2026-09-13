@@ -1,5 +1,5 @@
 import { L, MODULE_ID, htmlRoot, resolveUuidSync } from "./lib/dom.mjs";
-import { yieldToMkTargeting } from "./mk-targeting-bridge.mjs";
+import { mirrorTargetsToCanvas, yieldToMkTargeting } from "./mk-targeting-bridge.mjs";
 
 const PLAYER_ACTOR_TYPE = "Player";
 const TARGET_ACTOR_TYPES = new Set(["NPC", PLAYER_ACTOR_TYPE]);
@@ -83,6 +83,45 @@ function actorForConfig(config) {
   return document?.documentName === "Token" ? document.actor : document;
 }
 
+/** True for a spell whose range is Self: it can only ever land on its caster. */
+export function isSelfRangeSpell(config) {
+  if (config?.type !== "spell") return false;
+  const spell = resolveUuidSync(config.cast?.spellUuid ?? config.itemUuid, { warn: false });
+  return spell?.system?.range === "self";
+}
+
+/** The caster's own token — the one behind the config, else its first active token. */
+function casterTokenDescriptor(config) {
+  const document = resolveUuidSync(config?.actorUuid, { warn: false });
+  let token = document?.documentName === "Token" ? document : null;
+  if (!token) {
+    const actor = document?.documentName === "Token" ? document.actor : document;
+    const tokens = Array.from(actor?.getActiveTokens?.(true, true) ?? []);
+    token = tokens.find(candidate => candidate?.parent?.id === canvas?.scene?.id) ?? tokens[0] ?? null;
+  }
+  return tokenDescriptor(token, { seesHidden: true });
+}
+
+/**
+ * A Self-range spell targets its caster, whatever is targeted on the canvas.
+ * Sets `config.targetUuid` so the chat card names the caster; returns the
+ * descriptor, or null when the config is not such a spell or has no token.
+ */
+export function applySelfRangeTarget(config) {
+  if (!isSelfRangeSpell(config)) return null;
+  const caster = casterTokenDescriptor(config);
+  if (!caster) return null;
+  config.targetUuid = caster.uuid;
+  const metadata = config[PLAYER_TARGET_META_KEY];
+  if (metadata) {
+    metadata.self = true;
+    metadata.targets = [caster];
+    metadata.targetUuids = [caster.uuid];
+    metadata.selectedTargetUuid = caster.uuid;
+  }
+  return caster;
+}
+
 function releaseCanvasTarget(uuid) {
   const token = Array.from(canvas?.tokens?.placeables ?? [])
     .find(candidate => candidate?.document?.uuid === uuid || candidate?.uuid === uuid);
@@ -117,6 +156,12 @@ function randomTarget(targets, random = Math.random) {
 function synchronizeMetadata(config) {
   const metadata = config?.[PLAYER_TARGET_META_KEY];
   if (!metadata) return [];
+  if (metadata.self === true) {
+    const caster = casterTokenDescriptor(config);
+    metadata.targets = caster ? [caster] : [];
+    metadata.targetUuids = metadata.targets.map(target => target.uuid);
+    return metadata.targets;
+  }
   const selected = currentTargets(config);
   let targets;
   if (metadata.random === true) {
@@ -152,7 +197,9 @@ function renderPanel(panel, config) {
     const name = document.createElement("span");
     name.textContent = target.name;
     chip.classList.toggle("is-hidden-token", target.hidden === true);
+    chip.classList.toggle("is-self", metadata.self === true);
     chip.append(image, name);
+    if (metadata.self === true) chip.dataset.tooltip = L("GTNPCMULTIATTACK.Targets.SelfRange");
     if (metadata.random === true) {
       chip.dataset.tooltip = L("GTNPCMULTIATTACK.Random.RemoveTarget");
       chip.addEventListener("contextmenu", event => {
@@ -214,9 +261,12 @@ export function injectPlayerRollTargeting(_application, html, config) {
     targets: []
   };
   metadata.kind = config.type;
+  const self = isSelfRangeSpell(config);
+  metadata.self = self;
 
   const section = document.createElement("section");
   section.className = "gt-npc-ma-player-targeting";
+  section.classList.toggle("is-self", self);
   const heading = document.createElement("div");
   heading.className = "gt-npc-ma-player-target-heading";
   const headingText = document.createElement("span");
@@ -273,6 +323,15 @@ export function injectPlayerRollTargeting(_application, html, config) {
   randomLabel.append(random, document.createTextNode(L("GTNPCMULTIATTACK.Targets.Random")));
   options.append(randomLabel);
 
+  // A Self spell has one possible target; the pool controls would only mislead.
+  if (self) {
+    options.replaceChildren();
+    const note = document.createElement("span");
+    note.className = "gt-npc-ma-player-target-self-note";
+    note.textContent = L("GTNPCMULTIATTACK.Targets.SelfRange");
+    options.append(note);
+  }
+
   const pool = document.createElement("div");
   pool.className = "gt-npc-ma-player-target-pool";
   section.append(heading, pool);
@@ -286,6 +345,12 @@ export function injectPlayerRollTargeting(_application, html, config) {
   yieldToMkTargeting(root);
   activePanels.add({ panel: section, config });
   renderPanel(section, config);
+  // MK-Shadowdark's assistant refuses to roll with nothing targeted on the
+  // canvas; a Self spell's only target is the caster, so target them there.
+  if (self) {
+    const caster = casterTokenDescriptor(config);
+    if (caster) mirrorTargetsToCanvas([caster.uuid]);
+  }
   return section;
 }
 
@@ -301,7 +366,14 @@ export function preparePlayerAttackTarget(config, random = Math.random) {
 
 export function preparePlayerSpellTargets(config, random = Math.random) {
   const metadata = config?.[PLAYER_TARGET_META_KEY];
-  if (!metadata || metadata.kind !== "spell") return [];
+  if (!metadata || metadata.kind !== "spell") {
+    const caster = applySelfRangeTarget(config);
+    return caster ? [caster] : [];
+  }
+  if (metadata.self === true || isSelfRangeSpell(config)) {
+    const caster = applySelfRangeTarget(config);
+    if (caster) return [caster];
+  }
   const targets = synchronizeMetadata(config);
   const target = metadata.random ? randomTarget(targets, random) : targets.at(-1) ?? null;
   setSpellTarget(config, target);
@@ -427,10 +499,16 @@ export function registerPlayerTargetingHooks() {
     preparePlayerSpellTargets(config);
     return true;
   });
+  Hooks.on("SD-NPC-Spell-Cast", config => {
+    applySelfRangeTarget(config);
+    return true;
+  });
   Hooks.on("renderChatMessageHTML", injectAreaSpellTargets);
 }
 
 export const playerTargetingTestApi = Object.freeze({
+  applySelfRangeTarget,
+  isSelfRangeSpell,
   addRandomPlayerTarget,
   unregisterPlayerTargetingPanel,
   currentTargets,

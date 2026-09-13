@@ -26,6 +26,7 @@
   "GTNPCMULTIATTACK.Settings.YieldToMkTargetingHint": "When MK-Shadowdark's Targeting Assistant is on the same roll dialog as this module's Target row, hide its duplicate panel and mirror the targets chosen here onto the canvas, so its roll gate accepts them. Has no effect without MK-Shadowdark.",
   "GTNPCMULTIATTACK.Targets.SeesHidden": "Sees Hidden",
   "GTNPCMULTIATTACK.Targets.UseTargetTool": "Select targets with T.",
+  "GTNPCMULTIATTACK.Targets.SelfRange": "Range: Self — the caster is the target.",
   "GTNPCMULTIATTACK.Targets.Area": "Area",
   "GTNPCMULTIATTACK.Targets.ApplySpellDamage": "Apply spell damage to this target",
   "GTNPCMULTIATTACK.Targets.ShowNPCs": "NPC targets",

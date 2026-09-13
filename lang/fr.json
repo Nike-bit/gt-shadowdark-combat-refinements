@@ -26,6 +26,7 @@
   "GTNPCMULTIATTACK.Settings.YieldToMkTargetingHint": "Lorsque l'assistant de ciblage de MK-Shadowdark figure dans le même dialogue de jet que la ligne Cible de ce module, masque son panneau en double et reflète sur le canevas les cibles choisies ici, afin que son verrou de jet les accepte. Sans effet sans MK-Shadowdark.",
   "GTNPCMULTIATTACK.Targets.SeesHidden": "Voit les cachés",
   "GTNPCMULTIATTACK.Targets.UseTargetTool": "Sélectionnez les cibles avec T.",
+  "GTNPCMULTIATTACK.Targets.SelfRange": "Portée : Soi — le lanceur est la cible.",
   "GTNPCMULTIATTACK.Targets.Area": "Zone",
   "GTNPCMULTIATTACK.Targets.ApplySpellDamage": "Appliquer les dégâts du sort à cette cible",
   "GTNPCMULTIATTACK.Targets.ShowNPCs": "Cibles PNJ",

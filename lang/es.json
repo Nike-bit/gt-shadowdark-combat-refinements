@@ -26,6 +26,7 @@
   "GTNPCMULTIATTACK.Settings.YieldToMkTargetingHint": "Cuando el Asistente de Objetivos de MK-Shadowdark aparece en el mismo diálogo de tirada que la fila Objetivo de este módulo, oculta su panel duplicado y refleja en el tablero los objetivos elegidos aquí, para que su bloqueo de tirada los acepte. Sin MK-Shadowdark no tiene efecto.",
   "GTNPCMULTIATTACK.Targets.SeesHidden": "Ve ocultos",
   "GTNPCMULTIATTACK.Targets.UseTargetTool": "Selecciona objetivos con T.",
+  "GTNPCMULTIATTACK.Targets.SelfRange": "Alcance: Personal — el lanzador es el objetivo.",
   "GTNPCMULTIATTACK.Targets.Area": "Área",
   "GTNPCMULTIATTACK.Targets.ApplySpellDamage": "Aplicar daño del conjuro a este objetivo",
   "GTNPCMULTIATTACK.Targets.ShowNPCs": "Objetivos PNJ",

@@ -26,6 +26,7 @@
   "GTNPCMULTIATTACK.Settings.YieldToMkTargetingHint": "Quando l'Assistente di Mira di MK-Shadowdark compare nella stessa finestra di tiro della riga Bersaglio di questo modulo, nasconde il suo pannello duplicato e riflette sul canvas i bersagli scelti qui, così il suo blocco del tiro li accetta. Senza MK-Shadowdark non ha effetto.",
   "GTNPCMULTIATTACK.Targets.SeesHidden": "Vede nascosti",
   "GTNPCMULTIATTACK.Targets.UseTargetTool": "Seleziona i bersagli con T.",
+  "GTNPCMULTIATTACK.Targets.SelfRange": "Gittata: Sé — l'incantatore è il bersaglio.",
   "GTNPCMULTIATTACK.Targets.Area": "Area",
   "GTNPCMULTIATTACK.Targets.ApplySpellDamage": "Applica i danni dell’incantesimo a questo bersaglio",
   "GTNPCMULTIATTACK.Targets.ShowNPCs": "Bersagli PNG",
