@@ -1,5 +1,5 @@
 import { L, MODULE_ID, htmlRoot, resolveUuidSync } from "./lib/dom.mjs";
-import { mirrorTargetsToCanvas, yieldToMkTargeting } from "./mk-targeting-bridge.mjs";
+import { isMirroringTargets, mirrorTargetsToCanvas, yieldToMkTargeting } from "./mk-targeting-bridge.mjs";
 
 const PLAYER_ACTOR_TYPE = "Player";
 const TARGET_ACTOR_TYPES = new Set(["NPC", PLAYER_ACTOR_TYPE]);
@@ -50,9 +50,19 @@ function refreshStoredTarget(config, value) {
   return target?.actorUuid !== config.actorUuid ? target : null;
 }
 
+/**
+ * Random and Area pools accumulate: Foundry's Target tool replaces the
+ * previous target unless Shift is held, so a pool that mirrored the canvas
+ * would never hold more than one. Each target the user picks is added and
+ * stays until right-clicked away.
+ */
+function poolAccumulates(metadata) {
+  return metadata?.random === true || metadata?.area === true;
+}
+
 export function addRandomPlayerTarget(config, value) {
   const metadata = config?.[PLAYER_TARGET_META_KEY];
-  if (!metadata?.random) return false;
+  if (!poolAccumulates(metadata)) return false;
   if (metadata.randomPoolInitialized !== true) {
     metadata.targets = currentTargets(config);
     metadata.randomPoolInitialized = true;
@@ -71,7 +81,7 @@ export function addRandomPlayerTarget(config, value) {
 
 export function removeRandomPlayerTarget(config, uuid) {
   const metadata = config?.[PLAYER_TARGET_META_KEY];
-  if (!metadata?.random) return false;
+  if (!poolAccumulates(metadata)) return false;
   const previousLength = metadata.targets?.length ?? 0;
   metadata.targets = Array.from(metadata.targets ?? []).filter(target => target.uuid !== uuid);
   metadata.targetUuids = metadata.targets.map(target => target.uuid);
@@ -164,7 +174,7 @@ function synchronizeMetadata(config) {
   }
   const selected = currentTargets(config);
   let targets;
-  if (metadata.random === true) {
+  if (poolAccumulates(metadata)) {
     if (metadata.randomPoolInitialized !== true) {
       metadata.targets = selected;
       metadata.randomPoolInitialized = true;
@@ -177,7 +187,7 @@ function synchronizeMetadata(config) {
     for (const target of selected) unique.set(target.uuid, target);
     targets = Array.from(unique.values());
   }
-  else targets = metadata.area === true ? selected : selected.slice(-1);
+  else targets = selected.slice(-1);
   metadata.targets = targets;
   metadata.targetUuids = targets.map(target => target.uuid);
   return targets;
@@ -200,7 +210,7 @@ function renderPanel(panel, config) {
     chip.classList.toggle("is-self", metadata.self === true);
     chip.append(image, name);
     if (metadata.self === true) chip.dataset.tooltip = L("GTNPCMULTIATTACK.Targets.SelfRange");
-    if (metadata.random === true) {
+    if (poolAccumulates(metadata)) {
       chip.dataset.tooltip = L("GTNPCMULTIATTACK.Random.RemoveTarget");
       chip.addEventListener("contextmenu", event => {
         event.preventDefault();
@@ -297,6 +307,7 @@ export function injectPlayerRollTargeting(_application, html, config) {
     area.checked = metadata.area === true;
     area.addEventListener("change", () => {
       metadata.area = area.checked;
+      metadata.randomPoolInitialized = false;
       if (area.checked) {
         metadata.random = false;
         if (random) random.checked = false;
@@ -477,13 +488,21 @@ export function registerPlayerTargetingHooks() {
   Hooks.on("closeRollDialogSD", application => unregisterPlayerTargetingPanel(application?.config));
   Hooks.on("targetToken", (user, token, targeted) => {
     if (user !== game.user && user?.id !== game.user?.id) return;
+    if (isMirroringTargets()) return;
     if (targeted) {
+      const pools = [];
       for (const entry of Array.from(activePanels)) {
         if (entry.panel.isConnected === false) {
           activePanels.delete(entry);
           continue;
         }
-        addRandomPlayerTarget(entry.config, token);
+        if (addRandomPlayerTarget(entry.config, token)) pools.push(entry.config[PLAYER_TARGET_META_KEY]);
+      }
+      // The Target tool has just released the earlier picks on the canvas;
+      // put the whole pool back so the player sees every target marked.
+      const pool = pools.find(metadata => metadata.area === true);
+      if (pool && pool.targetUuids?.length > 1) {
+        globalThis.setTimeout(() => mirrorTargetsToCanvas(pool.targetUuids, { force: true }), 0);
       }
     }
     queuePanelRefresh();

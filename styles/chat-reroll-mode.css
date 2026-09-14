@@ -31,3 +31,13 @@
   align-items: center;
   gap: 3px;
 }
+
+.gt-npc-ma-reroll-undo {
+  margin-left: 6px;
+  cursor: pointer;
+}
+
+.gt-npc-ma-reroll-undo.is-pending {
+  opacity: 0.5;
+  pointer-events: none;
+}

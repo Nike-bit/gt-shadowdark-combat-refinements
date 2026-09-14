@@ -1,5 +1,5 @@
 import { recordCustomRuleReroll } from "./custom-attack-rules.mjs";
-import { L, MODULE_ID, htmlRoot } from "./lib/dom.mjs";
+import { escapeHtml, F, htmlRoot, L, MODULE_ID } from "./lib/dom.mjs";
 
 const SETTING_KEY = "enableChatRerollModes";
 const SINGLE_COMPARISON_SETTING = "enableSingleRollComparisonRerolls";
@@ -10,6 +10,9 @@ const FLAG_KEY = "rerollMode";
 const selectedRerollModes = new Map();
 const COMPARISON_FLAG_KEY = "comparisonBaseMode";
 const REROLL_MARK_KEY = "gtNpcMultiattackRerolled";
+/** On a reroll's config: the id of the message it rerolled, and whether a luck token paid for it. */
+const REROLL_ORIGIN_KEY = "gtNpcMultiattackRerollOf";
+const REROLL_LUCK_KEY = "gtNpcMultiattackRerollLuck";
 const SUPPORTED_REROLL_TYPES = new Set(["attack", "spell", "check"]);
 
 export function stripAppliedAdvantage(formula) {
@@ -56,17 +59,23 @@ export function isRerolledMessage(message) {
   return (message?.rollConfig ?? message)?.[REROLL_MARK_KEY] === true;
 }
 
-export function prepareRerollConfig(config, mode) {
+function markReroll(prepared, { originId = null, luckSpent = false } = {}) {
+  prepared[REROLL_MARK_KEY] = true;
+  if (originId) prepared[REROLL_ORIGIN_KEY] = originId;
+  prepared[REROLL_LUCK_KEY] = luckSpent === true;
+  return prepared;
+}
+
+export function prepareRerollConfig(config, mode, origin = {}) {
   const prepared = foundry.utils.deepClone(config);
   if (!prepared?.mainRoll) return prepared;
   prepared.mainRoll.formula = stripAppliedAdvantage(prepared.mainRoll.formula);
   prepared.mainRoll.advantage = Math.sign(Number(mode) || 0);
   prepared.mainRoll.reroll = true;
-  prepared[REROLL_MARK_KEY] = true;
-  return prepared;
+  return markReroll(prepared, origin);
 }
 
-export function prepareComparisonConfig(config, mode) {
+export function prepareComparisonConfig(config, mode, origin = {}) {
   const prepared = foundry.utils.deepClone(config);
   if (!prepared?.mainRoll) return prepared;
   const modifier = Number(mode) > 0 ? "kh" : "kl";
@@ -74,8 +83,13 @@ export function prepareComparisonConfig(config, mode) {
   prepared.mainRoll.formula = neutral.replace(/^(?:1)?d(\d+)/i, `2d$1${modifier}`);
   prepared.mainRoll.advantage = 0;
   prepared.mainRoll.reroll = true;
-  prepared[REROLL_MARK_KEY] = true;
-  return prepared;
+  return markReroll(prepared, origin);
+}
+
+/** The message a reroll card rerolled, if it still exists. */
+export function rerollOrigin(message) {
+  const id = message?.rollConfig?.[REROLL_ORIGIN_KEY];
+  return id ? game.messages?.get?.(id) ?? null : null;
 }
 
 function originalD20Result(message) {
@@ -89,20 +103,39 @@ async function actorForConfig(config) {
   return typeof fromUuid === "function" ? fromUuid(config?.actorUuid) : null;
 }
 
-async function consumeRerollLuck(actor) {
-  if (game.user.isGM) return true;
+/**
+ * Spend a luck token for a player's reroll. Returns "spent", "free" or false.
+ * A GM never pays, and neither does a keep-lowest reroll: taking the worse of
+ * two dice is a correction, not a favour from fortune.
+ */
+async function consumeRerollLuck(actor, mode) {
+  if (game.user.isGM || Number(mode) < 0) return "free";
   if (actor?.system?.hasLuckToken) {
     await actor.system.useLuckToken(true);
-    return true;
+    return "spent";
   }
   ui.notifications.warn(L("GTNPCMULTIATTACK.Reroll.NoLuckToken"));
   return false;
 }
 
-async function rollComparisonFromMessage(message, mode, actor) {
+/** Give back what consumeRerollLuck took, in whichever luck mode the world runs. */
+async function refundRerollLuck(actor) {
+  if (typeof actor?.update !== "function") return false;
+  let pulp = false;
+  try { pulp = game.settings.get("shadowdark", "usePulpMode") === true; }
+  catch (_error) { pulp = false; }
+  if (pulp) {
+    const remaining = Math.max(0, Math.floor(Number(actor.system?.luck?.remaining) || 0));
+    await actor.update({ "system.luck.remaining": remaining + 1 });
+  }
+  else await actor.update({ "system.luck.available": true });
+  return true;
+}
+
+async function rollComparisonFromMessage(message, mode, actor, origin) {
   const original = originalD20Result(message);
   if (original === null) throw new Error("The original d20 result could not be resolved.");
-  const config = prepareComparisonConfig(message.rollConfig, mode);
+  const config = prepareComparisonConfig(message.rollConfig, mode, origin);
   const mainRoll = new shadowdark.dice.RollSD(
     config.mainRoll.formula,
     actor.getRollData(),
@@ -168,10 +201,13 @@ export async function rerollRollWithMode(message, requestedMode) {
   if (originalMode && !mode) mode = originalMode;
 
   const actor = await actorForConfig(message.rollConfig);
-  if (!actor || !await consumeRerollLuck(actor)) return false;
+  if (!actor) return false;
+  const luck = await consumeRerollLuck(actor, mode);
+  if (!luck) return false;
+  const origin = { originId: message.id, luckSpent: luck === "spent" };
   const result = !originalMode
-    ? await rollComparisonFromMessage(message, mode, actor)
-    : await shadowdark.dice.rollFromConfig(prepareRerollConfig(message.rollConfig, mode));
+    ? await rollComparisonFromMessage(message, mode, actor, origin)
+    : await shadowdark.dice.rollFromConfig(prepareRerollConfig(message.rollConfig, mode, origin));
   await synchronizeSpellReroll(message.rollConfig, result);
   if (message.rollConfig.type === "attack") {
     try {
@@ -182,6 +218,62 @@ export async function rerollRollWithMode(message, requestedMode) {
     }
   }
   return result;
+}
+
+/**
+ * Withdraw a reroll made by mistake: the reroll card is removed, the luck
+ * token it cost comes back, and the original roll's consequences — lost
+ * spell, broken wand, attack features — are re-applied from the original
+ * result. Damage a third-party module already applied from the reroll is not
+ * touched; the note it posts says so.
+ */
+export async function undoReroll(message) {
+  const config = message?.rollConfig;
+  if (!isRerolledMessage(message)) return false;
+  const original = rerollOrigin(message);
+  if (!original) {
+    ui.notifications.warn(L("GTNPCMULTIATTACK.Reroll.UndoNoOriginal"));
+    return false;
+  }
+  const actor = await actorForConfig(config);
+  if (!actor) return false;
+  if (config[REROLL_LUCK_KEY] === true) await refundRerollLuck(actor);
+  const originalResult = original.getRoll?.("main")
+    ?? Array.from(original.rolls ?? []).find(roll => roll?.options?.type === "main")
+    ?? null;
+  await synchronizeSpellReroll(original.rollConfig, originalResult);
+  if (original.rollConfig?.type === "attack" && originalResult) {
+    try { await recordCustomRuleReroll(original.rollConfig, originalResult); }
+    catch (error) {
+      console.error(`${MODULE_ID} | Custom attack-rule evaluation after undoing a reroll failed.`, error);
+    }
+  }
+  await message.delete();
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    author: game.user.id,
+    content: `<p>${escapeHtml(F("GTNPCMULTIATTACK.Reroll.Undone", { actor: actor.name }))}</p>`,
+    flags: { [MODULE_ID]: { rerollUndone: original.id } }
+  });
+  return true;
+}
+
+function createUndoButton(message) {
+  const undo = document.createElement("a");
+  undo.className = "gt-npc-ma-reroll-undo";
+  undo.dataset.tooltip = L("GTNPCMULTIATTACK.Reroll.Undo");
+  undo.setAttribute("aria-label", undo.dataset.tooltip);
+  undo.innerHTML = '<i class="fa-solid fa-rotate-left" aria-hidden="true"></i>';
+  undo.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+    undo.classList.add("is-pending");
+    void undoReroll(message).catch(error => {
+      ui.notifications.error(L("GTNPCMULTIATTACK.Reroll.UndoFailed"));
+      console.error(`${MODULE_ID} | Undoing a reroll failed.`, error);
+    }).finally(() => undo.classList.remove("is-pending"));
+  });
+  return undo;
 }
 
 function makeModeButton(message, mode, currentMode) {
@@ -226,8 +318,16 @@ export function injectChatRerollModes(message, html) {
   if (!game.settings.get(MODULE_ID, SETTING_KEY)) return;
   const root = htmlRoot(html);
   if (!root || root.querySelector(".gt-npc-ma-reroll-modes")) return;
-  if (!isSupportedRerollConfig(message?.rollConfig) || isRerolledMessage(message)) return;
+  if (!isSupportedRerollConfig(message?.rollConfig)) return;
   if (!(game.user.isGM || game.user.id === message.author?.id)) return;
+  // A reroll card cannot be rerolled again, but it can be taken back.
+  if (isRerolledMessage(message)) {
+    if (!rerollOrigin(message) || root.querySelector(".gt-npc-ma-reroll-undo")) return;
+    const heading = root.querySelector(".shadowdark.chat-card .sub-heading")
+      ?? root.querySelector(".sub-heading");
+    heading?.append(createUndoButton(message));
+    return;
+  }
 
   const originalMode = originalAdvantageMode(message);
   const comparisonEnabled = game.settings.get(MODULE_ID, SINGLE_COMPARISON_SETTING);
@@ -262,6 +362,8 @@ export function injectChatRerollModes(message, html) {
 }
 
 export const chatRerollTestApi = Object.freeze({
+  undoReroll,
+  rerollOrigin,
   formulaAdvantageMode,
   isRerolledMessage,
   selectedRerollMode,

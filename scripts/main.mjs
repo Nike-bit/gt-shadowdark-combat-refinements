@@ -63,6 +63,8 @@ import { registerMkTargetingSetting } from "./mk-targeting-bridge.mjs";
 import { registerDeathTimerBridgeHooks } from "./mk-death-timer-bridge.mjs";
 import { registerSaveRequestHooks, registerSaveResolutionSetting } from "./save-requests.mjs";
 import { registerSheetFavoriteSpellHooks, registerSheetFavoritesSetting } from "./sheet-favorite-spells.mjs";
+import { registerQuickLaunchSettings } from "./lib/quick-launch.mjs";
+import { injectRollDialogSelectors } from "./roll-dialog-selector.mjs";
 
 const SHADOWDARK_SYSTEM_ID = "shadowdark";
 const NPC_ACTOR_TYPE = "NPC";
@@ -289,6 +291,7 @@ function registerSettings() {
   registerMkTargetingSetting();
   registerSaveResolutionSetting();
   registerSheetFavoritesSetting();
+  registerQuickLaunchSettings();
   registerMigration();
   registerPresetLibrary();
   registerSpellMishapSettings();
@@ -604,6 +607,7 @@ function onRenderRollDialog(application, html) {
   const config = application?.config;
   if (!root || !config) return;
 
+  injectRollDialogSelectors(application, root, config);
   injectAttributeDifficulty(application, root, config);
   injectPlayerRollTargeting(application, root, config);
 

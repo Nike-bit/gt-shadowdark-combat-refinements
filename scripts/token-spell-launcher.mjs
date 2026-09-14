@@ -21,6 +21,7 @@ import {
   togglePalette
 } from "./lib/palette.mjs";
 import { tooltipHoverDelayMs } from "./tooltip-hover.mjs";
+import { quickButtonMode, rememberedLaunch, rememberLaunch } from "./lib/quick-launch.mjs";
 
 const QUICK_SPELL_SETTING = "enableQuickSpellButton";
 const NPC_ACTOR_TYPE = "NPC";
@@ -161,7 +162,7 @@ export function quickSpellViewMemoryKey(application, actor) {
     ?? null;
 }
 
-function rememberedQuickSpellView(memoryKey) {
+export function rememberedQuickSpellView(memoryKey) {
   if (!memoryKey) return normalizeQuickSpellView();
   if (!quickSpellViewMemoryCache) {
     const stored = game.settings.get(MODULE_ID, VIEW_MEMORY_SETTING);
@@ -172,7 +173,7 @@ function rememberedQuickSpellView(memoryKey) {
   return normalizeQuickSpellView(quickSpellViewMemoryCache[memoryKey]);
 }
 
-async function rememberQuickSpellView(memoryKey, view, sources) {
+export async function rememberQuickSpellView(memoryKey, view, sources) {
   if (!memoryKey) return;
   rememberedQuickSpellView(memoryKey);
   delete quickSpellViewMemoryCache[memoryKey];
@@ -187,15 +188,27 @@ async function rememberQuickSpellView(memoryKey, view, sources) {
   await quickSpellViewMemoryWrite;
 }
 
-export async function launchQuickSpell(actor, entry, { skipPrompt = false, focus = false } = {}) {
+export async function launchQuickSpell(actor, entry, { skipPrompt = false, focus = false, rollMode } = {}) {
   if (!actor?.isOwner || !entry?.available || typeof actor.system?.castSpell !== "function") return false;
+  void rememberLaunch(actor.uuid, "spell", entry.id).catch(() => undefined);
   const cast = focus ? { cast: { focus: true } } : {};
   if (skipPrompt) cast.skipPrompt = true;
+  if (rollMode) cast.rollMode = rollMode;
   if (entry.actorType === NPC_ACTOR_TYPE) {
     return actor.system.castSpell(entry.spellUuid, cast);
   }
   const config = { itemUuid: entry.itemUuid, ...cast };
   return actor.system.castSpell(entry.spellUuid, config);
+}
+
+/** The spell the HUD button opens in dialog mode: last used, else first favourite, else first castable. */
+export function defaultQuickSpell(actor, entries) {
+  const castable = entries.filter(entry => entry.available);
+  if (!castable.length) return null;
+  const remembered = rememberedLaunch(actor?.uuid, "spell");
+  return castable.find(entry => entry.id === remembered)
+    ?? castable.find(entry => entry.favorite)
+    ?? castable[0];
 }
 
 export async function toggleFavoriteSpellId(actor, id) {
@@ -318,7 +331,7 @@ export function injectPlayerSpellFavorites(application, html) {
   return controls;
 }
 
-function sourceLabel(source) {
+export function sourceLabel(source) {
   return L(`GTNPCMULTIATTACK.QuickSpell.Source.${source}`);
 }
 
@@ -336,7 +349,7 @@ function restoreOpenPalette(application, palette, button) {
   return true;
 }
 
-async function buildSpellPreview(row, entry) {
+export async function buildSpellPreview(row, entry) {
   const description = String(entry?.description ?? "").trim();
   if (!description) return null;
   const html = await enrichHTML(description);
@@ -618,6 +631,27 @@ export async function injectQuickSpellLauncher(application, html) {
     button.setAttribute("aria-label", button.dataset.tooltip);
     button.dataset.palette = PALETTE_ID;
     button.innerHTML = '<i class="fa-solid fa-hand-sparkles" inert></i>';
+    if (quickButtonMode() === "dialog") {
+      // Straight into the spell dialog, whose left column is the palette.
+      const placeholder = document.createElement("div");
+      placeholder.className = "palette gt-npc-ma-quick-spell-palette";
+      placeholder.hidden = true;
+      button.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        const entry = defaultQuickSpell(actor, spells);
+        if (!entry) {
+          ui.notifications.warn(L("GTNPCMULTIATTACK.QuickSpell.Unavailable"));
+          return;
+        }
+        void launchQuickSpell(actor, entry, { skipPrompt: event.shiftKey }).catch(error => {
+          ui.notifications.error(L("GTNPCMULTIATTACK.QuickSpell.Failed"));
+          console.error(`${MODULE_ID} | Quick spell failed.`, error);
+        });
+      });
+      insertQuickButton(column, button, placeholder, QUICK_BUTTON_ORDER.spell);
+      return button;
+    }
     const palette = createSpellPalette(application, actor, spells, button, column);
 
     button.addEventListener("click", event => {
@@ -639,6 +673,7 @@ export async function injectQuickSpellLauncher(application, html) {
 
 export const quickSpellTestApi = Object.freeze({
   collectQuickSpells,
+  defaultQuickSpell,
   favoriteSpellId,
   normalizeQuickSpellView,
   playerSpellRowDescriptor,

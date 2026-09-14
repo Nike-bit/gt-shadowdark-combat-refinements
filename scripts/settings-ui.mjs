@@ -14,6 +14,16 @@ const QUICK_SPELL_SETTING = "enableQuickSpellButton";
 const QUICK_ABILITY_SETTING = "enableQuickAbilityButton";
 const QUICK_ATTRIBUTE_SETTING = "enableQuickAttributeButton";
 const SHEET_FAVORITES_SETTING = "showFavoriteSpellsOnSheet";
+const ROLL_INTERFACE_SETTING = "rollInterface";
+const UNARMED_SETTING = "includeUnarmedAttacks";
+const MK_YIELD_SETTING = "yieldToMkTargetingAssistant";
+const AUTOCOUNTER_SETTING = "enableAttackAutocounter";
+const DEFAULT_QUANTITY_SETTING = "defaultChosenAttacks";
+const PLAYER_ATTACK_TARGETING_SETTING = "enablePlayerAttackTargeting";
+const SPELL_TARGETING_SETTING = "enableSpellTargeting";
+const CHAT_REROLL_SETTING = "enableChatRerollModes";
+const SINGLE_COMPARISON_REROLL_SETTING = "enableSingleRollComparisonRerolls";
+const NUMBER_ATTACK_MESSAGES_SETTING = "numberMultiattackMessages";
 const TINT_ATTACK_MESSAGES_SETTING = "tintMultiattackMessages";
 const TINT_SPELL_MESSAGES_SETTING = "tintSpellMessages";
 const ENABLE_MISHAPS_SETTING = "enableAutomaticSpellMishaps";
@@ -194,6 +204,11 @@ export function enhanceSettingsConfig(_application, html) {
     rowClass: "gt-npc-ma-spell-message-color"
   });
   enhanceSpellMishapMenu(root);
+  enhanceTargetSelectorSettings(root);
+  organizeSettingsSections(root);
+}
+
+function enhanceTargetSelectorSettings(root) {
   const targetToggle = settingInput(root, TARGET_SELECTOR_SETTING);
   const targetGroup = targetToggle?.closest(".form-group");
   if (!targetToggle || !targetGroup) return;
@@ -244,6 +259,164 @@ function enhanceMessageColorSettings(root, { toggleSetting, colorSettings, conta
   const updateVisibility = () => { container.hidden = !toggle.checked; };
   toggle.addEventListener("change", updateVisibility);
   updateVisibility();
+}
+
+/**
+ * The module's tab, read top to bottom, in the order of the README: each
+ * section names the part of play it touches, then lists its settings. Anything
+ * a section does not claim keeps its place at the end, so a setting added
+ * without a home is never lost. World-scoped settings carry a badge — the GM
+ * should see at a glance which choices reach every player.
+ */
+const SETTINGS_SECTIONS = Object.freeze([
+  {
+    id: "multiattacks",
+    icon: "fa-solid fa-swords",
+    title: "GTNPCMULTIATTACK.Settings.SectionMultiattacks",
+    hint: "GTNPCMULTIATTACK.Settings.SectionMultiattacksHint",
+    members: [
+      { setting: AUTOCOUNTER_SETTING },
+      { setting: DEFAULT_QUANTITY_SETTING }
+    ]
+  },
+  {
+    id: "targeting",
+    icon: "fa-solid fa-crosshairs",
+    title: "GTNPCMULTIATTACK.Settings.SectionTargeting",
+    hint: "GTNPCMULTIATTACK.Settings.SectionTargetingHint",
+    members: [
+      { setting: TARGET_SELECTOR_SETTING },
+      { selector: ".gt-npc-ma-keybindings-setting" },
+      { selector: ".gt-npc-ma-font-settings" },
+      { setting: PLAYER_ATTACK_TARGETING_SETTING },
+      { setting: SPELL_TARGETING_SETTING },
+      { setting: MK_YIELD_SETTING }
+    ]
+  },
+  {
+    id: "roll-interface",
+    icon: "fa-solid fa-dice-d20",
+    title: "GTNPCMULTIATTACK.Settings.SectionRollInterface",
+    hint: "GTNPCMULTIATTACK.Settings.SectionRollInterfaceHint",
+    members: [
+      { setting: ROLL_INTERFACE_SETTING },
+      { setting: UNARMED_SETTING },
+      { setting: QUICK_ATTACK_SETTING },
+      { setting: QUICK_SPELL_SETTING },
+      { setting: SHEET_FAVORITES_SETTING },
+      { setting: QUICK_ABILITY_SETTING },
+      { setting: QUICK_ATTRIBUTE_SETTING },
+      { setting: TOOLTIP_HOVER_DELAY_SETTING }
+    ]
+  },
+  {
+    id: "chat",
+    icon: "fa-solid fa-comments",
+    title: "GTNPCMULTIATTACK.Settings.SectionChat",
+    hint: "GTNPCMULTIATTACK.Settings.SectionChatHint",
+    members: [
+      { setting: CHAT_REROLL_SETTING },
+      { setting: SINGLE_COMPARISON_REROLL_SETTING },
+      { setting: NUMBER_ATTACK_MESSAGES_SETTING },
+      { setting: TINT_ATTACK_MESSAGES_SETTING },
+      { selector: ".gt-npc-ma-attack-message-colors" },
+      { setting: TINT_SPELL_MESSAGES_SETTING },
+      { selector: ".gt-npc-ma-spell-message-colors" }
+    ]
+  },
+  {
+    id: "mishaps",
+    icon: "fa-solid fa-wand-sparkles",
+    title: "GTNPCMULTIATTACK.Settings.SectionMishaps",
+    hint: "GTNPCMULTIATTACK.Settings.SectionMishapsHint",
+    members: [
+      { setting: ENABLE_MISHAPS_SETTING },
+      { selector: ".gt-npc-ma-mishap-menu-setting" }
+    ]
+  },
+  {
+    id: "attack-features",
+    icon: "fa-solid fa-book-skull",
+    title: "GTNPCMULTIATTACK.Settings.SectionAttackFeatures",
+    hint: "GTNPCMULTIATTACK.Settings.SectionAttackFeaturesHint",
+    members: [
+      { setting: CUSTOM_RULES_SETTING },
+      { selector: ".gt-npc-ma-preset-library-setting" },
+      { setting: SAVE_RESOLUTION_SETTING }
+    ]
+  }
+]);
+
+function settingsSectionMember(root, member) {
+  if (member.setting) return settingInput(root, member.setting)?.closest(".form-group") ?? null;
+  return root.querySelector(member.selector);
+}
+
+function settingScope(key) {
+  try { return game.settings.settings.get(`${MODULE_ID}.${key}`)?.scope ?? null; }
+  catch (_error) { return null; }
+}
+
+/** A "World" badge beside the label of every world-scoped setting. */
+function badgeWorldSettings(container) {
+  for (const input of container.querySelectorAll(`[name^="${MODULE_ID}."]`)) {
+    const key = input.name.slice(MODULE_ID.length + 1);
+    const label = input.closest(".form-group")?.querySelector("label");
+    if (!label || settingScope(key) !== "world" || label.querySelector(".gt-npc-ma-scope-badge")) continue;
+    const badge = document.createElement("span");
+    badge.className = "gt-npc-ma-scope-badge";
+    badge.textContent = L("GTNPCMULTIATTACK.Settings.WorldScope");
+    badge.title = L("GTNPCMULTIATTACK.Settings.WorldScopeHint");
+    label.append(badge);
+  }
+}
+
+function settingsSectionElement(definition) {
+  const section = document.createElement("section");
+  section.className = "gt-npc-ma-settings-section";
+  section.dataset.section = definition.id;
+  const header = document.createElement("header");
+  header.className = "gt-npc-ma-settings-section-header";
+  const heading = document.createElement("h3");
+  const icon = document.createElement("i");
+  icon.className = definition.icon;
+  icon.setAttribute("aria-hidden", "true");
+  heading.append(icon, document.createTextNode(L(definition.title)));
+  const hint = document.createElement("p");
+  hint.className = "gt-npc-ma-settings-section-hint";
+  hint.textContent = L(definition.hint);
+  header.append(heading, hint);
+  section.append(header);
+  return section;
+}
+
+export function organizeSettingsSections(root) {
+  const first = root.querySelector(`[name^="${MODULE_ID}."]`)?.closest(".form-group");
+  const container = root.querySelector(`section.tab[data-tab="${MODULE_ID}"]`) ?? first?.parentElement;
+  if (!container || container.querySelector(".gt-npc-ma-settings-section")) return null;
+  const claimed = new Set();
+  const sections = [];
+  for (const definition of SETTINGS_SECTIONS) {
+    const members = definition.members
+      .map(member => settingsSectionMember(root, member))
+      .filter(element => element && !claimed.has(element));
+    if (!members.length) continue;
+    const section = settingsSectionElement(definition);
+    for (const element of members) {
+      claimed.add(element);
+      section.append(element);
+    }
+    sections.push(section);
+  }
+  if (!sections.length) return null;
+  const anchor = first && !claimed.has(first) ? first : Array.from(container.children).find(child => claimed.has(child));
+  if (anchor) anchor.insertAdjacentElement("beforebegin", sections[0]);
+  else container.prepend(sections[0]);
+  for (let index = 1; index < sections.length; index += 1) {
+    sections[index - 1].insertAdjacentElement("afterend", sections[index]);
+  }
+  badgeWorldSettings(container);
+  return sections;
 }
 
 function enhanceQuickSpellSettings(root) {
@@ -335,5 +508,7 @@ function enhanceCustomRuleSettings(root) {
 export const settingsUiTestApi = Object.freeze({
   normalizeHex,
   openTargetKeybindingsConfig,
-  spellMishapMenuGroup
+  organizeSettingsSections,
+  spellMishapMenuGroup,
+  SETTINGS_SECTIONS
 });

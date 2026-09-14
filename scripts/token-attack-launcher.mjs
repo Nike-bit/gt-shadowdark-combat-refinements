@@ -17,6 +17,8 @@ import {
   togglePalette
 } from "./lib/palette.mjs";
 import { tooltipHoverDelayMs } from "./tooltip-hover.mjs";
+import { quickButtonMode, rememberedLaunch, rememberLaunch } from "./lib/quick-launch.mjs";
+import { offersUnarmedAttack, rollUnarmedAttack, UNARMED_ENTRY_ID, unarmedEntry } from "./unarmed-attack.mjs";
 
 const QUICK_ATTACK_SETTING = "enableQuickAttackButton";
 const NPC_ACTOR_TYPE = "NPC";
@@ -144,13 +146,28 @@ export async function prepareQuickAttackEntries(actor, entries = collectQuickAtt
   return entries;
 }
 
-export async function launchQuickAttack(actor, entry) {
+export async function launchQuickAttack(actor, entry, { skipPrompt = false } = {}) {
   if (!actor?.isOwner || !entry) return false;
-  if (entry.actorType === NPC_ACTOR_TYPE) return actor.system.rollAttack(entry.itemId);
-  return actor.system.rollAttack(entry.itemUuid, { attack: { type: entry.attackType } });
+  void rememberLaunch(actor.uuid, "attack", entry.id).catch(() => undefined);
+  const extra = skipPrompt ? { skipPrompt: true } : {};
+  if (entry.unarmed) return rollUnarmedAttack(actor, extra);
+  if (entry.actorType === NPC_ACTOR_TYPE) {
+    return skipPrompt ? actor.system.rollAttack(entry.itemId, extra) : actor.system.rollAttack(entry.itemId);
+  }
+  return actor.system.rollAttack(entry.itemUuid, { attack: { type: entry.attackType }, ...extra });
 }
 
-async function buildAttackPreview(entry) {
+/** The attack the HUD button opens in dialog mode: last used, else the first melee entry. */
+export function defaultQuickAttack(actor, entries = collectQuickAttacks(actor)) {
+  const all = offersUnarmedAttack(actor) ? [...entries, unarmedEntry(actor)] : entries;
+  if (!all.length) return null;
+  const remembered = rememberedLaunch(actor?.uuid, "attack");
+  return all.find(entry => entry.id === remembered)
+    ?? all.find(entry => entry.attackType === "melee" && !entry.unarmed)
+    ?? all[0];
+}
+
+export async function buildAttackPreview(entry) {
   const preview = document.createElement("aside");
   preview.className = "gt-npc-ma-quick-attack-preview";
   preview.setAttribute("role", "tooltip");
@@ -250,7 +267,8 @@ export async function injectQuickAttackLauncher(application, html) {
 
   root.dataset[PENDING_DATASET_KEY] = "true";
   try {
-    const attacks = await prepareQuickAttackEntries(actor);
+    const dialogMode = quickButtonMode() === "dialog";
+    const attacks = dialogMode ? collectQuickAttacks(actor) : await prepareQuickAttackEntries(actor);
     if (!attacks.length || root.querySelector(`.${BUTTON_CLASS}`)) return;
     const column = root.querySelector(".col.right");
     if (!column) return;
@@ -261,6 +279,25 @@ export async function injectQuickAttackLauncher(application, html) {
     button.dataset.tooltip = L("GTNPCMULTIATTACK.QuickAttack.Tooltip");
     button.setAttribute("aria-label", button.dataset.tooltip);
     button.innerHTML = '<i class="fa-solid fa-hand-fist" inert></i>';
+
+    if (dialogMode) {
+      // Straight into the attack dialog, where the weapon rows live.
+      const placeholder = document.createElement("div");
+      placeholder.className = "palette gt-npc-ma-quick-attack-palette";
+      placeholder.hidden = true;
+      button.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        const entry = defaultQuickAttack(actor, attacks);
+        if (!entry) return;
+        void launchQuickAttack(actor, entry, { skipPrompt: event.shiftKey }).catch(error => {
+          ui.notifications.error(L("GTNPCMULTIATTACK.QuickAttack.Failed"));
+          console.error(`${MODULE_ID} | Quick attack failed.`, error);
+        });
+      });
+      insertQuickButton(column, button, placeholder, QUICK_BUTTON_ORDER.attack);
+      return button;
+    }
 
     const palette = document.createElement("div");
     palette.className = "palette palette-list gt-npc-ma-quick-attack-palette";
@@ -288,6 +325,7 @@ export async function injectQuickAttackLauncher(application, html) {
 }
 
 export const quickAttackTestApi = Object.freeze({
+  defaultQuickAttack,
   collectQuickAttacks,
   prepareQuickAttackEntries,
   launchQuickAttack

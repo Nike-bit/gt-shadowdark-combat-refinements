@@ -2,6 +2,61 @@
   display: none;
 }
 
+/* --- Sections of the module's settings tab -------------------------------- */
+
+.gt-npc-ma-settings-section {
+  margin: 0 0 14px;
+}
+
+.gt-npc-ma-settings-section + .gt-npc-ma-settings-section {
+  margin-top: 22px;
+}
+
+.gt-npc-ma-settings-section-header {
+  margin: 0 0 8px;
+  padding: 0 0 5px;
+  border-bottom: 1px solid var(--color-border-light-2, #777);
+}
+
+.gt-npc-ma-settings-section-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  border: none;
+  font-size: var(--font-size-16, 1rem);
+  font-weight: bold;
+  letter-spacing: 0.02em;
+}
+
+.gt-npc-ma-settings-section-header h3 i {
+  width: 1.1em;
+  text-align: center;
+  font-size: 0.9em;
+  color: var(--color-warm-1, #c9a45c);
+}
+
+.gt-npc-ma-settings-section-hint {
+  margin: 3px 0 0;
+  font-size: var(--font-size-12, 0.75rem);
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.gt-npc-ma-scope-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 5px;
+  border: 1px solid var(--color-border-light-2, #777);
+  border-radius: 3px;
+  font-size: var(--font-size-10, 0.625rem);
+  font-weight: normal;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  opacity: 0.8;
+}
+
 .gt-npc-ma-preset-library-setting[hidden] {
   display: none;
 }

@@ -92,6 +92,11 @@ the chosen tokens using the dialog's main advantage state.
 
 ## Player targeting
 
+Foundry's Target tool replaces the previous target unless Shift is held, so
+the **Area** and **Random** pools accumulate instead of mirroring the canvas:
+every token you target is added to the pool (and, for Area, marked again on
+the canvas), and a right-click on a chip removes it.
+
 Optional Player attack targeting adds a compact target pool to Shadowdark's native
 attack dialog. Its single header row contains **Target**, **Sees Hidden** and
 **Random**. **Sees Hidden** is scoped to the open dialog and makes hidden tokens
@@ -131,8 +136,68 @@ error instead of silently making a normal reroll. The client setting **Enable
 Single-Roll Comparison Rerolls** can disable this behavior; neutral rolls then
 retain Shadowdark's normal failed-roll reroll behavior and do not gain module
 controls on successful rolls. Damage rerolls are unchanged, and Shadowdark's
-author/GM permissions and luck-token requirement remain authoritative. Spell
+author/GM permissions remain authoritative. A player's `kh.` reroll spends a
+luck token as Shadowdark's own reroll does; a `kl.` reroll **never** does — a
+roll with disadvantage may be the correction of a mistake, not a favour from
+fortune — and a GM never pays.
+
+A reroll made by mistake can be **undone**: the reroll's card carries an undo
+button (author or GM) that removes that card, refunds the luck token it cost —
+in either luck mode — and re-applies the original roll's consequences: a spell
+lost or kept, a wand broken or not, and any attack features re-evaluated from
+the original result. A note in chat records the withdrawal. Damage a
+third-party module already applied from the reroll is not reversed; the note
+says so. Spell
 rerolls also preserve Shadowdark's lost-spell and broken-wand updates.
+
+## Choosing the weapon or spell in the roll dialog
+
+Shadowdark's roll dialog is where the module puts the choice of *what* to
+roll, so the same controls appear however the dialog was opened — from the
+character sheet, from the module's Token HUD buttons, from MK-Shadowdark's
+token equipment icons, or from a macro.
+
+**Attack dialogs** show the creature's attacks as rows of buttons above the
+attack roll: a *Melee* row, then a *Ranged* row (thrown weapons appear in
+both; NPCs get their NPC Attacks). Each button carries the Item's art, its
+name and `+bonus · damage · range`; the attack being rolled is highlighted, and
+hovering a button shows the same description-and-qualities preview the
+palette shows. Choosing another attack reopens the dialog for it in the same
+place on screen — it is not edited in place, because Shadowdark's own
+`rollAttack` keeps the chosen weapon in hand after the roll (ammunition) and
+must be started again for the new one. The module's attack counter, target
+rows and Conditional Features start fresh for the new attack.
+
+**Spell dialogs** grow a left column that is the quick-spell palette: All /
+Tier tabs, **Wand** and **Scroll** filters, Favorites first, the ⭐ star to
+change them, lost spells struck through, hover previews, and a list that
+scrolls past a fixed height rather than growing the dialog. The spell being
+cast is highlighted; clicking another reopens the dialog for it (double-click
+or Shift-click casts it at once). A focus-duration spell gets a **Cast with
+focus** checkbox under the cast roll. Wand and scroll spells reopen with the
+right source in hand, so lost-spell, scroll-consumption and wand-breakage
+handling stay Shadowdark's.
+
+**Unarmed attacks** — world setting **Include unarmed attacks** (off by
+default) adds an *Unarmed* button to every player character's Melee row: `1d2`
+damage, rolled with Strength; a Thief uses Dexterity, a Fighter the higher of
+the two (class read from the character's Class Item, core names in any of the
+module's languages). The attack goes through Shadowdark's dialog and roll
+pipeline like any weapon, honouring melee attack bonuses and advantage from
+active effects.
+
+Choosing another entry does not blink: the new dialog is launched first and,
+because every Shadowdark roll dialog shares one element id, its first render
+swaps in where the old one stands in a single paint; the old dialog is then
+retired without its closing animation.
+
+Client setting **Attack and spell interface** chooses between the two designs.
+*Merged* (default): the roll dialog carries the weapon rows / spell column, and
+the Token HUD's Quick Attack and Quick Spell open it directly for the last
+attack or spell used on that token — else the first melee attack, else the
+first favourite spell — with Shift-click skipping the prompt. *Separate*: the
+hover palettes on the Token HUD and Shadowdark's plain roll dialog, as before
+1.1.
 
 ## Quick attacks
 
@@ -501,11 +566,30 @@ Its previous hidden state is restored on release.
 
 ## Module settings
 
+The module's tab in Game Settings is divided into six sections, in the order
+of this README, each with a one-line description of the part of play it
+touches. World-scoped settings (chosen by the GM, applying to every player)
+carry a **World** badge; everything else is a per-user preference.
+
+**NPC multiattacks** — one dialog counting a monster's attacks down.
+
 - Enable Attack Autocounter
 - Default number of chosen attacks: `1` or `All`
-- Enable Target Selector (NPC attacks)
+
+**Targeting** — target pools in the dialogs, and how target names are drawn.
+
+- Enable Target Selector (NPC attacks), with the Targeting Keys button and the
+  NPC / PC target font style and color rows (visible while the selector is on)
 - Enable PC Attack Targeting
 - Enable Spell Targeting
+- Yield to MK-Shadowdark Targeting Assistant (hides its duplicate panel and
+  mirrors this module's targets onto the canvas so its roll gate passes)
+
+**Roll dialog and Token HUD** — choosing what to roll.
+
+- Attack and spell interface: *Merged* (choose inside the roll dialog; the
+  HUD's quick buttons open it) or *Separate* (HUD palettes and plain dialogs)
+- Include unarmed attacks (world)
 - Enable Quick Attack Button
 - Enable Quick Spell Button
 - Favorite Spells on the Abilities tab (shown while Quick Spell is enabled)
@@ -513,18 +597,26 @@ Its previous hidden state is restored on release.
 - Enable Quick Attribute Button (PCs)
 - Tooltip Hover Window Delay, shared by Quick Attack, Quick Spell, and Quick Ability
   (visible while any of those launchers is enabled; default 0.5 seconds, minimum 0)
+
+**Chat cards** — rerolls, numbering and result colours.
+
 - Enable Chat Reroll Modes
 - Enable Single-Roll Comparison Rerolls
 - Number Multiattack Messages
 - Tint Attack and Attribute Results and four configurable result colors
 - Tint Spellcasting Results and four configurable result colors
-- Enable Automatic Spell Mishaps (world setting)
+
+**Spell mishaps** (world)
+
+- Enable Automatic Spell Mishaps
 - Spell Mishap Tables (GM-only configuration window)
-- Enable Custom Attack Rules (world setting)
-- Custom Attack Preset Library (GM-only world submenu)
-- Yield to MK-Shadowdark Targeting Assistant (client; hides its duplicate panel and mirrors this module's targets onto the canvas so its roll gate passes)
-- NPC target font style and color
-- PC target font style and color
+
+**Attack Features** (world)
+
+- Enable Custom Attack Rules
+- Custom Attack Preset Library (GM-only submenu)
+- Ability checks asked of targets: prompt the target's player, or resolve
+  automatically
 
 The PC/NPC font rows are visible only while **Enable Target Selector** is checked.
 Regular, bold, and italic styles are available. Hiding the rows does not erase
