@@ -722,10 +722,10 @@ once is not supported.
 `module.json` points Foundry at GitHub: `manifest` is the **latest** release's
 `module.json`, `download` is the versioned zip. For each release:
 
-1. Bump `version` and the `v…` in `download` in `module.json` (the build warns
+1. Bump `version` and the version in `download` in `module.json` (the build warns
    when they disagree).
 2. `node tools/build-release.mjs`.
-3. Create a GitHub release tagged `v<version>` and attach **both**
+3. Create a GitHub release tagged `<version>` (bare, e.g. `1.1.0`) and attach **both**
    `dist/module.json` and `dist/gt-shadowdark-combat-refinements.zip`.
 
 Users install with the manifest URL
