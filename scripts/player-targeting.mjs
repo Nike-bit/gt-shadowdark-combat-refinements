@@ -1,5 +1,6 @@
 import { L, MODULE_ID, htmlRoot, resolveUuidSync } from "./lib/dom.mjs";
 import { isMirroringTargets, mirrorTargetsToCanvas, yieldToMkTargeting } from "./mk-targeting-bridge.mjs";
+import { prepareSpellcastingDifficulty } from "./spellcasting-difficulty.mjs";
 
 const PLAYER_ACTOR_TYPE = "Player";
 const TARGET_ACTOR_TYPES = new Set(["NPC", PLAYER_ACTOR_TYPE]);
@@ -515,10 +516,12 @@ export function registerPlayerTargetingHooks() {
     return true;
   });
   Hooks.on("SD-Player-Spell", config => {
+    prepareSpellcastingDifficulty(config);
     preparePlayerSpellTargets(config);
     return true;
   });
   Hooks.on("SD-NPC-Spell-Cast", config => {
+    prepareSpellcastingDifficulty(config);
     applySelfRangeTarget(config);
     return true;
   });

@@ -22,6 +22,7 @@ import {
 } from "./lib/palette.mjs";
 import { tooltipHoverDelayMs } from "./tooltip-hover.mjs";
 import { quickButtonMode, rememberedLaunch, rememberLaunch } from "./lib/quick-launch.mjs";
+import { prepareSpellcastingDifficulty } from "./spellcasting-difficulty.mjs";
 
 const QUICK_SPELL_SETTING = "enableQuickSpellButton";
 const NPC_ACTOR_TYPE = "NPC";
@@ -191,7 +192,8 @@ export async function rememberQuickSpellView(memoryKey, view, sources) {
 export async function launchQuickSpell(actor, entry, { skipPrompt = false, focus = false, rollMode } = {}) {
   if (!actor?.isOwner || !entry?.available || typeof actor.system?.castSpell !== "function") return false;
   void rememberLaunch(actor.uuid, "spell", entry.id).catch(() => undefined);
-  const cast = focus ? { cast: { focus: true } } : {};
+  const cast = { type: "spell", ...(focus ? { cast: { focus: true } } : {}) };
+  prepareSpellcastingDifficulty(cast, await resolveUuid(entry.spellUuid, { warn: false }));
   if (skipPrompt) cast.skipPrompt = true;
   if (rollMode) cast.rollMode = rollMode;
   if (entry.actorType === NPC_ACTOR_TYPE) {

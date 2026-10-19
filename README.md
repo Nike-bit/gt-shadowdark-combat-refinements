@@ -4,7 +4,7 @@ A Foundry VTT module of optional combat tools for the Shadowdark RPG system.
 
 > **Renamed in 1.0.** This module was previously published as **GT-NPC Multiattack**
 > (`gt-npc-multiattack`). On first load, settings, favourites, custom attack rules,
-> custom attack rules and swallow state are migrated automatically from the old
+> swallow state are migrated automatically from the old
 > identity. See [Migrating from GT-NPC Multiattack](#migrating-from-gt-npc-multiattack).
 
 When a normal Shadowdark `NPC Attack` has a Num. Attacks value greater than one,
@@ -121,6 +121,12 @@ casters too. Damage Area spells expose a
 GM-only apply-damage button per target; non-damage spell effects continue through
 Shadowdark's normal/manual workflow.
 
+Spellcasting checks use the Spell Item's own casting difficulty (normally
+**10 + spell tier**), including NPC casts, Self/Area/Random targeting, scrolls,
+wands, and module rerolls. Target AC is used only for weapon attacks. Version
+1.1.2 corrects Shadowdark 4.0.6's NPC path, which can otherwise keep target AC
+when a target was already selected before opening the spell dialog.
+
 ## Chat reroll modes
 
 The optional chat reroll feature adds full-size, mutually exclusive `kh.` and `kl.`
@@ -149,6 +155,10 @@ the original result. A note in chat records the withdrawal. Damage a
 third-party module already applied from the reroll is not reversed; the note
 says so. Spell
 rerolls also preserve Shadowdark's lost-spell and broken-wand updates.
+
+Player Focus casts keep their known spell after a failed reroll or when that
+reroll is undone, matching the initial Focus cast. NPC casting and wand failure
+rules retain their separate Shadowdark behavior.
 
 ## Choosing the weapon or spell in the roll dialog
 
@@ -362,9 +372,11 @@ none: every attack in a batch with Shatter switched on is a shattering blow.
 
 The module settings place the GM-only **Custom Attack Preset Library** directly
 under **Enable Custom Attack Rules** and hide it when the feature is disabled
-without deleting saved presets. Seventeen localized presets are built in and
+without deleting saved presets. Twenty-three localized presets are built in and
 read-only: Gore, Crush, Charge, Rampage, Ambush, Backstab, Assassinate,
-Algae-Eater, Shatter, Mob, Pod Hunter, Swallow, Grab, Rage, Greedy, Poison, and Sever.
+Algae-Eater, Shatter, Mob, Pod Hunter, Swallow, Grab, Rage, Greedy, Poison (Damage),
+Poison (Paralyze), Poison (Sleep), Poison (Lethal), Petrify, Knock, Ability Drain,
+and Sever.
 Duplicate
 any preset to create an editable world preset. Custom presets contain a name,
 description, category,
@@ -388,7 +400,7 @@ document while leaving the Custom enablement choice intact.
 
 An importable generic collection is bundled at
 `presets/shadowdark-monster-attack-library.json`, generated from the built-in
-profiles by `node tools/export-preset-library.mjs`. It contains the same seventeen
+profiles by `node tools/export-preset-library.mjs`. It contains the same twenty-three
 mechanical profiles without duplicating them for individual monsters.
 
 The Sever profile records the kept natural d20 result. A successful natural 18+
@@ -510,6 +522,10 @@ applied and its record posted. Cancel withdraws a misfire — a player's cancel
 is carried to the GM over the module socket. A hidden attack (`gmroll`,
 `blindroll`) whispers its request to the GM and the target's owner only.
 
+Before settling a request, the GM verifies the rolled Actor, requested attribute,
+the DC in both the configuration and evaluated roll, and the author's current
+ownership or GM permission. A mismatched check leaves the request pending.
+
 World setting **Ability checks asked of targets** switches this to **Roll
 automatically**, where the engine rolls the check on the
 spot. Swallow's STR check follows the same setting. Player characters are
@@ -560,9 +576,18 @@ the field reverts.
 Swallow uses a module-owned flag on the swallowed Token, hides that Token, and
 adds a module status effect after a failed automatic DC 12 STR check. On each later
 turn of the swallower it deals 1d8 HP damage. Standard Shadowdark chat-card damage
-dealt from inside the gullet is accumulated by combat round; reaching 15 releases
+dealt by all swallowed creatures is combined for their swallower in the same
+combat round; reaching 15 releases
 all swallowed targets. A GM can also release a swallowed Token from its Token HUD.
 Its previous hidden state is restored on release.
+
+The shared tally persists on the swallower Token as
+`flags.gt-shadowdark-combat-refinements.swallowGulletDamage`, containing the combat
+ID, round, and total. Simultaneous damage updates are queued. A different combat
+or round starts a fresh tally, and healing does not contribute. Round-based damage
+counting requires an active combat; manual release also works outside combat.
+On upgrading from an older version, the new tally starts at zero: old per-victim
+totals are retained but cannot safely be reused because they lack a combat ID.
 
 ## Module settings
 
@@ -683,7 +708,7 @@ was selected.
 Version 1.0 renames the module to `gt-shadowdark-combat-refinements`
 ("GT Combat Refinements"). The first time a world loads the renamed module, the
 active GM's client carries the following across from `gt-npc-multiattack` and
-then clears the old keys:
+then clears the old document-flag keys:
 
 - world settings, including the custom preset library and the spell-mishap
   class/table mappings;
@@ -693,10 +718,15 @@ then clears the old keys:
 - `favoriteSpells` Actor flags;
 - `swallowed` Token flags, across **every** scene rather than only the active one.
 
-Each connected user's own client preferences migrate when they log in.
+Each client's preferences migrate once, recorded in the hidden client setting
+`legacyClientIdMigration`. If a storage write fails, migration remains incomplete
+and retries on a later load.
 
-Values already present under the new identity are never overwritten. Flag readers
-also fall back to the old namespace for this release, so a document the sweep
+Explicitly stored settings and document flags under the new identity are never
+overwritten, including values equal to their defaults, false, zero, or empty
+values. Version 1.1.3 fixes the repeated-login overwrite from older releases;
+preferences already reset by an older release need to be chosen again once.
+Flag readers also fall back to the old namespace for this release, so a document the sweep
 misses keeps working until it is migrated. The swallow status-effect id is
 deliberately unchanged so ActiveEffects already on swallowed tokens stay
 recognisable.
@@ -711,6 +741,9 @@ once is not supported.
 ## Development
 
 - `node tests/runtime-smoke.mjs` runs the smoke suite.
+- `node tests/spellcasting-difficulty.mjs` checks spell DC isolation from target AC.
+- `node tests/review-regressions.mjs` checks migration, Focus rerolls/undo,
+  save-request validation, and combined Swallow damage.
 - `node tools/export-preset-library.mjs` regenerates the bundled preset JSON from
   `BUILTIN_PRESETS`; the suite fails if the two drift.
 - `node tools/build-release.mjs` stages a distributable copy in `dist/`,

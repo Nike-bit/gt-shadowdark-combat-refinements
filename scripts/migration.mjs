@@ -1,7 +1,9 @@
 import { LEGACY_MODULE_ID, MODULE_ID } from "./lib/dom.mjs";
 
 export const MIGRATION_SETTING = "legacyIdMigration";
+export const CLIENT_MIGRATION_SETTING = "legacyClientIdMigration";
 const MIGRATION_VERSION = 2;
+const CLIENT_MIGRATION_VERSION = 1;
 
 /**
  * Document flags this module owns. Each is copied from the legacy namespace into
@@ -92,24 +94,20 @@ function allTokenDocuments() {
   return Array.from(game.scenes ?? []).flatMap(scene => Array.from(scene.tokens ?? []));
 }
 
-/** Raw value of a legacy setting, whichever storage backend holds it. */
-function legacySettingValue(name, scope) {
-  const key = `${LEGACY_MODULE_ID}.${name}`;
-  try {
-    if (scope === "world") {
-      const stored = game.settings.storage.get("world")?.find?.(setting => setting.key === key);
-      return stored === undefined || stored === null ? undefined : stored.value;
-    }
-    const raw = game.settings.storage.get("client")?.getItem?.(key)
-      ?? globalThis.localStorage?.getItem?.(key);
-    if (raw === null || raw === undefined) return undefined;
-    try { return JSON.parse(raw); }
-    catch (_error) { return raw; }
+/** Read stored values, not defaults: false, zero, null and empty values count. */
+function storedSettingValue(moduleId, name, scope) {
+  const key = `${moduleId}.${name}`;
+  if (scope === "world") {
+    const storage = game.settings.storage?.get("world");
+    const stored = storage?.getSetting?.(key)
+      ?? storage?.find?.(setting => setting.key === key && (setting.user ?? null) === null);
+    return stored === undefined || stored === null ? undefined : stored.value;
   }
-  catch (error) {
-    console.warn(`${MODULE_ID} | Could not read legacy setting ${key}.`, error);
-    return undefined;
-  }
+  const raw = game.settings.storage?.get("client")?.getItem?.(key)
+    ?? globalThis.localStorage?.getItem?.(key);
+  if (raw === null || raw === undefined) return undefined;
+  try { return JSON.parse(raw); }
+  catch (_error) { return raw; }
 }
 
 /**
@@ -118,23 +116,40 @@ function legacySettingValue(name, scope) {
  */
 export async function migrateSettings({ world = false } = {}) {
   let migrated = 0;
+  const failures = [];
   for (const [key, definition] of game.settings.settings ?? []) {
     if (!key.startsWith(`${MODULE_ID}.`)) continue;
     const name = key.slice(MODULE_ID.length + 1);
-    if (name === MIGRATION_SETTING) continue;
+    if ([MIGRATION_SETTING, CLIENT_MIGRATION_SETTING].includes(name)) continue;
+    if (!["world", "client"].includes(definition.scope)) continue;
     const isWorld = definition.scope === "world";
     if (isWorld !== world) continue;
-    const value = legacySettingValue(name, isWorld ? "world" : "client");
+    const scope = isWorld ? "world" : "client";
+    if (storedSettingValue(MODULE_ID, name, scope) !== undefined) continue;
+    const value = storedSettingValue(LEGACY_MODULE_ID, name, scope);
     if (value === undefined) continue;
     try {
       await game.settings.set(MODULE_ID, name, value);
       migrated += 1;
     }
     catch (error) {
+      failures.push(error);
       console.warn(`${MODULE_ID} | Could not carry over the ${name} setting.`, error);
     }
   }
+  // Leave the completion marker unset so a later load can retry failed writes.
+  if (failures.length) throw new AggregateError(failures, "Legacy setting migration did not complete.");
   return migrated;
+}
+
+export async function migrateClientSettings() {
+  const state = game.settings.get(MODULE_ID, CLIENT_MIGRATION_SETTING);
+  if (Number(state?.version) >= CLIENT_MIGRATION_VERSION) return 0;
+  const settings = await migrateSettings({ world: false });
+  await game.settings.set(MODULE_ID, CLIENT_MIGRATION_SETTING, {
+    version: CLIENT_MIGRATION_VERSION, at: Date.now(), settings
+  });
+  return settings;
 }
 
 /**
@@ -145,7 +160,7 @@ export async function migrateSettings({ world = false } = {}) {
  * preferences migrate for whoever is logged in.
  */
 export async function migrateLegacyModuleId() {
-  await migrateSettings({ world: false });
+  await migrateClientSettings();
   if (!isActiveGm()) return null;
 
   const state = game.settings.get(MODULE_ID, MIGRATION_SETTING);
@@ -179,6 +194,12 @@ export async function migrateLegacyModuleId() {
 export function registerMigration() {
   game.settings.register(MODULE_ID, MIGRATION_SETTING, {
     scope: "world",
+    config: false,
+    type: Object,
+    default: {}
+  });
+  game.settings.register(MODULE_ID, CLIENT_MIGRATION_SETTING, {
+    scope: "client",
     config: false,
     type: Object,
     default: {}

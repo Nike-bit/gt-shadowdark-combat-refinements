@@ -82,12 +82,12 @@ export function requestFromMessage(message) {
 
 /** Whether `user` may roll or cancel this request: a GM, or an owner of the target. */
 export function canAnswerSaveRequest(request, user = game.user) {
-  if (!request) return false;
+  if (!request || !user) return false;
   if (user?.isGM) return true;
   const actor = actorFromDocument(resolveUuidSync(request.targetUuid, { warn: false }));
   if (!actor) return false;
   if (typeof actor.testUserPermission === "function") return actor.testUserPermission(user, "OWNER");
-  return actor.isOwner === true;
+  return user.id === game.user?.id && actor.isOwner === true;
 }
 
 function outcomeText(request) {
@@ -249,6 +249,25 @@ function mainRollOf(message) {
     ?? null;
 }
 
+/** Verify the actual check and its author before the GM applies consequences. */
+async function matchesRequestedSave(message, request, roll) {
+  const config = rollConfigOf(message);
+  const difficulty = Number(request.dc);
+  if (config?.type !== "check" || !Number.isFinite(difficulty) || difficulty < 1
+    || String(config.check?.stat ?? "").toLowerCase() !== String(request.ability ?? "").toLowerCase()
+    || Number(config.mainRoll?.dc) !== difficulty || Number(roll?.options?.dc) !== difficulty) return false;
+  const [target, rolled] = await Promise.all([
+    resolveUuid(request.targetUuid, { warn: false }),
+    resolveUuid(config.actorUuid, { warn: false })
+  ]);
+  const expectedActor = actorFromDocument(target);
+  const actualActor = actorFromDocument(rolled);
+  if (!expectedActor?.uuid || actualActor?.uuid !== expectedActor.uuid) return false;
+  const authorId = message.author?.id ?? message.user?.id;
+  const author = authorId ? game.users?.get?.(authorId) : null;
+  return Boolean(author && (author.isGM || expectedActor.testUserPermission?.(author, "OWNER")));
+}
+
 /**
  * The active GM sees every check card; one tagged with a pending request's id
  * settles that request. A card for an already settled request — a luck-token
@@ -265,6 +284,7 @@ export async function settleSaveRequestFromRoll(message) {
   if (!roll || typeof roll.success !== "boolean") return null;
   resolving.add(requestId);
   try {
+    if (!await matchesRequestedSave(message, request, roll)) return null;
     return await resolveSaveRequest(
       requestMessage,
       roll.success ? SAVE_REQUEST_STATUS.resisted : SAVE_REQUEST_STATUS.failed,

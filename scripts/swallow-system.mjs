@@ -4,6 +4,8 @@ import { rollAbilitySave } from "./ability-saves.mjs";
 import { postSaveRequest, registerSaveRequestResolver, shouldRequestSave } from "./save-requests.mjs";
 
 const SWALLOWED_FLAG = "swallowed";
+export const GULLET_DAMAGE_FLAG = "swallowGulletDamage";
+const gulletDamageQueues = new Map();
 // Deliberately unchanged across the 1.0 rename: existing ActiveEffects on
 // swallowed tokens carry this id and must stay recognisable.
 const STATUS_ID = "gt-npc-multiattack-swallowed";
@@ -207,31 +209,48 @@ async function onCombatTurn(combat, changed) {
   for (const token of swallowed) await applyOngoingDamage(token, swallowedState(token), combat);
 }
 
-function sourceSwallowedToken(actorUuid) {
-  return allSwallowedTokens().find(token => token.actor?.uuid === actorUuid);
+function sourceSwallowedToken(actorUuid, swallowerUuid) {
+  return allSwallowedTokens().find(token => token.actor?.uuid === actorUuid
+    && swallowedState(token)?.swallowerTokenUuid === swallowerUuid);
 }
 
 async function onDamageApplied(message, changed) {
   if (!activeGm()) return;
   const applied = foundry.utils.getProperty(changed, "flags.shadowdark.damageApplied")
-    ?? changed?.flags?.shadowdark?.damageApplied;
+    ?? changed?.flags?.shadowdark?.damageApplied ?? changed?.["flags.shadowdark.damageApplied"];
   if (applied !== true) return;
   const config = message.rollConfig;
-  if (!config?.actorUuid || !config.targetUuid) return;
-  const sourceToken = sourceSwallowedToken(config.actorUuid);
-  const state = swallowedState(sourceToken);
-  if (!state || state.swallowerTokenUuid !== config.targetUuid) return;
+  if (!config?.actorUuid || !config.targetUuid || config.cast?.damageType === "healing") return;
+  if (!sourceSwallowedToken(config.actorUuid, config.targetUuid)) return;
   const damage = Math.max(0, Number(message.getRoll?.("damage")?.total) || 0);
   if (!damage) return;
+  const combatUuid = game.combat?.uuid ?? game.combat?.id;
+  if (!combatUuid) return;
   const round = combatRound();
-  const previous = state.gulletDamageRound === round ? Number(state.gulletDamage) || 0 : 0;
-  const total = previous + damage;
-  await sourceToken.setFlag(MODULE_ID, SWALLOWED_FLAG, {
-    ...state,
-    gulletDamageRound: round,
-    gulletDamage: total
+  const key = config.targetUuid;
+  // Foundry does not await async hook callbacks. Serialize writes so two hits
+  // arriving together cannot both read the same old total and lose one hit.
+  const previousTask = gulletDamageQueues.get(key) ?? Promise.resolve();
+  const task = previousTask.catch(() => undefined).then(async () => {
+    const sourceToken = sourceSwallowedToken(config.actorUuid, key);
+    const state = swallowedState(sourceToken);
+    if (!state) return;
+    const swallower = await resolveTokenDocument(key);
+    if (!swallower) return;
+    const ledger = documentFlag(swallower, GULLET_DAMAGE_FLAG);
+    let previous = 0;
+    if (ledger?.combatUuid === combatUuid && ledger.round === round) {
+      previous = Math.max(0, Number(ledger.total) || 0);
+    }
+    // Old per-victim counters lack a combat ID and cannot safely be imported:
+    // the same round number may belong to an entirely different encounter.
+    const total = previous + damage;
+    await swallower.setFlag(MODULE_ID, GULLET_DAMAGE_FLAG, { combatUuid, round, total });
+    if (total >= Number(state.releaseDamage)) await releaseAllFromSwallower(key);
   });
-  if (total >= Number(state.releaseDamage)) await releaseAllFromSwallower(state.swallowerTokenUuid);
+  gulletDamageQueues.set(key, task);
+  try { await task; }
+  finally { if (gulletDamageQueues.get(key) === task) gulletDamageQueues.delete(key); }
 }
 
 function injectReleaseButton(application, html) {
@@ -273,7 +292,9 @@ export function registerSwallowSystem() {
     registerModuleStatusEffects();
   });
   Hooks.on("updateCombat", onCombatTurn);
-  Hooks.on("updateChatMessage", onDamageApplied);
+  Hooks.on("updateChatMessage", (message, changed) => onDamageApplied(message, changed).catch(error => {
+    console.error(`${MODULE_ID} | Could not record damage dealt from inside a swallowed creature.`, error);
+  }));
   Hooks.on("renderTokenHUD", injectReleaseButton);
   Hooks.on("deleteToken", token => {
     if (activeGm()) void releaseAllFromSwallower(token.uuid);

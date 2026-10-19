@@ -311,10 +311,6 @@ function spellChoiceElement(actor, entry, selected, { onSelect, onFavorite, brow
 }
 
 async function launchSpellEntry(actor, entry, config, { immediate = false, focus = false } = {}) {
-  void rememberLaunch(actor.uuid, "spell", entry.id).catch(() => undefined);
-  if (entry.actorType === NPC_ACTOR_TYPE) {
-    return actor.system.castSpell(entry.spellUuid, { rollMode: config.rollMode, ...(immediate ? { skipPrompt: true } : {}) });
-  }
   return launchQuickSpell(actor, entry, { skipPrompt: immediate, focus, rollMode: config.rollMode });
 }
 

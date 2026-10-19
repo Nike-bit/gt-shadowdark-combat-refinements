@@ -1,5 +1,6 @@
 import { recordCustomRuleReroll } from "./custom-attack-rules.mjs";
 import { escapeHtml, F, htmlRoot, L, MODULE_ID } from "./lib/dom.mjs";
+import { prepareSpellcastingDifficulty } from "./spellcasting-difficulty.mjs";
 
 const SETTING_KEY = "enableChatRerollModes";
 const SINGLE_COMPARISON_SETTING = "enableSingleRollComparisonRerolls";
@@ -68,6 +69,7 @@ function markReroll(prepared, { originId = null, luckSpent = false } = {}) {
 
 export function prepareRerollConfig(config, mode, origin = {}) {
   const prepared = foundry.utils.deepClone(config);
+  prepareSpellcastingDifficulty(prepared);
   if (!prepared?.mainRoll) return prepared;
   prepared.mainRoll.formula = stripAppliedAdvantage(prepared.mainRoll.formula);
   prepared.mainRoll.advantage = Math.sign(Number(mode) || 0);
@@ -77,6 +79,7 @@ export function prepareRerollConfig(config, mode, origin = {}) {
 
 export function prepareComparisonConfig(config, mode, origin = {}) {
   const prepared = foundry.utils.deepClone(config);
+  prepareSpellcastingDifficulty(prepared);
   if (!prepared?.mainRoll) return prepared;
   const modifier = Number(mode) > 0 ? "kh" : "kl";
   const neutral = stripAppliedAdvantage(prepared.mainRoll.formula);
@@ -182,7 +185,8 @@ async function synchronizeSpellReroll(config, result) {
     }
   }
   else if (spell) {
-    await spell.update({ "system.lost": !result?.success });
+    const playerFocus = config.cast.focus === true && (await actorForConfig(config))?.type === "Player";
+    await spell.update({ "system.lost": !result?.success && !playerFocus });
   }
 }
 

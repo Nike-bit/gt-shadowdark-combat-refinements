@@ -65,6 +65,7 @@ import { registerSaveRequestHooks, registerSaveResolutionSetting } from "./save-
 import { registerSheetFavoriteSpellHooks, registerSheetFavoritesSetting } from "./sheet-favorite-spells.mjs";
 import { registerQuickLaunchSettings } from "./lib/quick-launch.mjs";
 import { injectRollDialogSelectors } from "./roll-dialog-selector.mjs";
+import { prepareSpellcastingDifficulty } from "./spellcasting-difficulty.mjs";
 
 const SHADOWDARK_SYSTEM_ID = "shadowdark";
 const NPC_ACTOR_TYPE = "NPC";
@@ -607,6 +608,7 @@ function onRenderRollDialog(application, html) {
   const config = application?.config;
   if (!root || !config) return;
 
+  prepareSpellcastingDifficulty(config);
   injectRollDialogSelectors(application, root, config);
   injectAttributeDifficulty(application, root, config);
   injectPlayerRollTargeting(application, root, config);
